@@ -1,0 +1,624 @@
+Slidedeck ZuKoSe
+
+What is this talk about?
+
+1. Extreme value theory: let the tail speak for itself
+What is the probability of something beyond range
+Plot of POT with height of stationary sequence, with some high region beyond the data
+Need extrapolation beyond the range of observed data to get risk measures (typically either the probability of exceedance of high quantiles $p = \Pr\{Q(1-p) \geq q\}$, or high quantiles with small tail probabilities $Q(1-p)$ for given $p$ (return levels).
+
+2. Asymptotic theory
+Limiting result is generalized Pareto distribution
+Convergence statement with sequences and limit
+
+Comment: scaling sequences unknown, but absorbed by u and scale(u)
+
+3. Aside
+
+We need data to estimate model parameter based on n_u exceedances above threshold u (necessarily finite!)
+Bias-variance tradeoff: quality of generalized Pareto approximation (distribution-specific) increases as u -> endpoint,
+but the number of exceedances for estimation goes down (so variance increases).
+
+For consistency, we need an intermediate sequence n_u/n -> 0, but n_u, n -> \infty. In practice, need enough observations (say 20) for reliable estimation.
+
+4. Fixed or random thresholds
+
+
+- If u is an order statistic (sample value), it is a random threshold (uncertainty!)
+- If u is a fixed quantity (20 mm of rain), then the probability of exceedance is random (binomial contribution to likelihood)
+
+
+Inference is conditional on exceeding u (so different u lead to different samples of exceedances, with overlap). Makes comparison of models hard
+
+
+Uncertainty often ignored
+
+5. Why does threshold selection matter?
+
+Often different thresholds give very different results
+
+6. Threshold stability properties of the generalized Pareto
+
+Subasymptotic result - what happens when we fit a generalized Pareto to threshold exceedances with finite u?
+
+7. Penultimate approximations
+
+8. Poisson process and order statistics
+
+- Point process derivation
+- Markov property of order statistics
+
+What do we do in practice
+
+- Select a threshold somehow
+- Parametric: fit a generalized Pareto
+- Semiparametric: estimate tail index, and quantiles
+
+- Extrapolate
+
+Properties of the generalized Pareto
+
+- Threshold stability (but penultimate approximations)
+
+
+Statistical property
+
+Most common estimators are maximum likelihood (higher variance for xi, but easy to generalize to more complex settings)
+
+Popular alternative semiparametric Hill estimator (xi > 0, heavy-tail case)
+Further interplay with finite sample properties of estimators
+
+Estimators have different properties
+
+
+Why a review paper?
+
+Active topic (more than 40 selection algorithms reviewed)
+- Many methods not available in software (so not used/compared)
+- Existing reviews often do not assess quality of fit.
+- New methods since last review (circa 2012-2016).
+
+
+
+## Motivation: peaks over threshold
+
+
+In the simplest applications:
+
+1. we choose a high threshold $u$
+    - equivalently, choose the number of upper order statistics $n_u$ with threshold $u=X_{(n-n_u)}$.
+2. we fit the limiting generalized Pareto distribution with scale $\sigma_u$ and shape $\xi$ to exceedances $X-u$ over threshold $u$.
+    - if the shape $\xi>0$, we can use Hill's estimator.
+3. we use the resulting model for extrapolation beyond $u$.
+
+## Threshold selection
+
+Bias and variance trade-off:
+
+- taking $u$ too high will mean that the number of exceedances $n_u$ is small (high uncertainty).
+- taking $u$ too low increases the risk of biased extrapolation.
+
+
+Since the limit holds as $u$ increases to the upper endpoint of the support of $X$, we must use a so-called intermediate sequence $n_u/n\to 0$ as $n_u\to\infty$ for consistency.
+
+## Limiting distribution and threshold stability
+
+Limiting distribution of threshold exceedances is generalized Pareto. **If** the limit was exact and $X-u\sim \mathsf{GPD}(\sigma_u,\xi)$:
+
+- For a higher threshold $v>u$, then 
+\begin{align*}
+X-v \mid X>v \sim \mathsf{GPD}\{\sigma_v=\sigma_u+ \xi(v-u), \xi\}.
+\end{align*}
+- Provided $\xi>-1$, the expected value of exceedances is $$\mathsf{E}(X-u) = \sigma_u/(1+\xi).$$
+
+<!--
+
+## Point process formulation {.smaller}
+
+The GPD can be derived from a limiting Poisson process ${\mathcal P}$ under which rare events occur in the $(t,y)$-plane with measure
+\begin{align*}
+\Lambda[(t',t)\times[u,\infty)] = (t_2-t_1)\{1+\xi(u-\eta)/\sigma\}^{-1/\xi}_+, \qquad \eta \in \mathbb{R}, \sigma > 0.
+\end{align*}
+
+
+The vertical coordinates of ${\mathcal P}$ can be generated as 
+\begin{align*}
+\eta + \frac{\sigma}{\xi}\Bigg\{\Bigg(\sum_{j=1}^r E_j\Bigg)^{-\xi} - 1\Bigg\}, \quad r=1,2,\ldots;
+\end{align*}
+where the $E_j$ are independent exponential random variables.
+
+Fit the Poisson process model and transform the data to a unit-rate Poisson process.
+
+The choice of threshold then amounts to choosing the highest value for which the transformed observations are consistent with a unit-rate Poisson process.
+
+-->
+<!--
+## Martingale residuals {.smaller}
+
+Threshold-stability and the Markov nature of order statistics $X_{(1)}\leq\cdots\leq X_{(n)}$ of a simple random sample drawn from $\mathsf{GPD}(\sigma,\xi)$ imply that the joint density of the order statistics is
+\begin{equation}
+\label{eq:Renyi}
+\prod_{j=2}^n f(x_{(j)} \mid x_{(j-1)}) f(x_{(1)})= \prod_{j=1}^n \frac{1}{\sigma_j}\left\{1 + \frac{\xi}{n+1-j}\frac{(x_{(j)}-x_{(j-1)})}{ \sigma_j}\right\}^{-(n+1-j)/\xi-1}_+,
+\end{equation}
+where $\sigma_j = (\sigma+\xi x_{(j-1)})/(n+1-j)$ and $x_{(0)}=0$.
+
+
+This extends the Rényi representation for exponential data and  provides a likelihood if the parameters are allowed to change at order statistics, provided that the parameters for the increment $X_{(j)}-X_{(j-1)}$ depend on the order statistics up to $X_{(j-1)}$.
+
+@Stein:2023 explores this idea to replace the threshold by a weighting scheme of the observations.
+
+-->
+
+## Why another survey paper?
+
+There are earlier reviews of the topic, but the literature keeps increasing...
+
+- The most comprehensive reviews are @Scarrott.MacDonald:2012, @Caeiro.Gomes:2016 and @Langousis:2016.
+- Selective numerical comparisons in @Gomes.Oliveira:2001, @Murphy.Tawn.Varty:2024  and @Schneider:2021, among others. 
+
+We compare about 40 different methods numerically.
+ 
+## Some problems with (most methods) 
+
+::: {style="font-size: 80%;"}
+
+Conditional model: only consider data above the threshold.
+
+Consider candidate thresholds $u_1 < \cdots < u_K$.
+
+ Resulting problems:
+ 
+- Dependence between estimates, test statistics, $P$-values due to sample overlap.
+- Non-nested models.
+- Multiple testing problem.
+- Potential for automation.
+- Non-stationarity (dependence on covariate, change over time).
+
+:::
+
+## Objective 
+
+We provide an extensive review of threshold selection mechanisms for peaks over threshold analysis, including
+
+- visual diagnostics,
+- extended generalized Pareto models,
+- goodness-of-fit tests,
+- semiparametric methods based on Hill's estimator (not covered in this presentation due to time constraints),
+- etc.
+
+## How to benchmark methods?
+
+What makes a threshold procedure good? In practice, we care about the extrapolation, often
+
+- a high quantile (return level), or
+- a probability of exceedance.
+
+Benchmarking the method based on proximity with the asymptotic shape parameter is **not** a good point of reference.
+
+
+::: {style="font-size: 70%;"}
+Scale and shape parameters are negatively correlated.
+:::
+
+## Penultimate effects
+
+
+Rather than using $\mathsf{GPD}(a_u, \xi)$ above $u$
+@smith_1987 show that a better approximation is obtained by letting the shape vary with $u$, taking $\mathsf{GPD}(a_u, \xi_u)$ with $\xi_u = r'(u),$ where $$r(t) = \{1-F(t)\}/f(t)$$ is the reciprocal hazard function.
+
+
+::: {style="font-size: 60%;"}
+
+`mev` package: `smith.penult(family = "norm", method = "pot", qu = c(0.9, 0.95, 0.99))`
+
+
+:::
+
+## Illustration of penultimate effects: normal example {.smaller}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '100%'
+knitr::include_graphics("figures/penultimate_normal.png")
+#knitr::include_graphics("figures/Fig1.png")
+```
+
+
+## Illustration of penultimate effects: normal quantiles
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '100%'
+knitr::include_graphics("figures/Fig1.png")
+```
+
+
+::: {style="font-size: 60%;"}
+Conditional quantiles above threshold, rescaled. 45$^{\circ}$ line shows limiting exponential with true conditional quantile (black), fitted GPD with 1M observations (dashed red) and penultimate (green).
+
+
+:::
+
+## Graphical diagnostics on Padova data {.smaller}
+
+Mean residual life [@Davison.Smith:1990], parameter stability and Hill plots.
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '100%'
+knitr::include_graphics("figures/Fig_padova_visualdiag.png")
+```
+
+Which threshold would you choose?
+
+## Caveats of graphical diagnostics
+
+- Difficulty in automating selection (need visual inspection); proposals in @Langousis:2016 or @Danielsson:2019, but both fall short.
+- Problems: pointwise confidence intervals.
+- Underlying assumptions affected by penultimate effects.
+- The plots say nothing about goodness-of-fit!
+
+## Stability? {.smaller}
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '60%'
+knitr::include_graphics("figures/Fig-tstabplots4.png")
+```
+
+Hill, PORT and random block maxima [@Wager:2014] estimates as a function of $n_u$.
+
+## Generalized Pareto model extensions
+
+
+::: {style="font-size: 90%;"}
+
+Build extended models with additional parameters (with continuity constraints) and test for equality of shape.
+
+Some model are inspired by penultimate approximations (GPD-like, but with different shapes over each interval defined by $\boldsymbol{u}$).
+
+
+@Northrop.Coleman:2014: piecewise generalized Pareto model coupled with score tests.
+
+- tests are dependent because the data are re-used; no control of overall error rate. 
+- the power of the test depends on the choice of thresholds and particularly on the largest threshold $u_K$.
+
+:::
+
+## Extended generalized Pareto models
+
+
+
+::: {style="font-size: 80%;"}
+
+Embed generalized Pareto $F(x;\sigma,\xi)$ in a more flexible model using a continuous distribution function $G_\kappa$ on $[0,1]$. The EGP$(\sigma,\xi, G_\kappa)$ distribution function is then
+\begin{align*}
+\Pr(X\leq x) = G_\kappa\{ F(x;\sigma,\xi)\}.                     \end{align*}
+Choose $G$ to keep the tail properties. See the chapter of @Naveau:2025 for a recent review.
+
+- @Papastathopoulos.Tawn:2013: models imply the density at the origin is zero.
+- @Gamet.Jalbert:2022 propose two models, but one leads to non-regular asymptotics (restriction on boundary of the parameter space).
+- @Naveau:2016 additional models with two parameters.
+
+:::
+
+## Extended generalized Pareto models
+
+Test for restriction to generalized Pareto sub-model using likelihood ratio tests (profile).
+
+- Could allow for a bit more data to be included, at the expense of additional parameters to estimate (and potentially more variability).
+- Same problems as parameter stability plots (sequential tests, overlapping data).
+
+## Splicing models 
+
+::: {style="font-size: 80%;"}
+
+Glue a distribution for the bulk with one for the tail using a mixture of disjoint components below $u$ (bulk) and above $u$ (generalized Pareto).
+
+See @Scarrott.MacDonald:2012 and @Hu.Scarrott:2018 for reviews.
+
+If we build $u$ as a parameter of the model, then
+
+- it leads to sample contamination, as fit of the GPD may be driven by bulk.
+- the profile likelihood for threshold $u$ is non-monotone.
+- Bayesian version with random threshold [@doNascimento.Gamerman.Lopes:2012] accounts for uncertainty.
+
+:::
+
+## Goodness-of-fit measures
+
+::: {style="font-size: 90%;"}
+
+1. Fit a generalized Pareto distribution at each candidate threshold.
+2. Compute either
+   - a suitable statistic which indicates departure from the posulated distribution.
+   - a measure of discrepancy between empirical distribution of exceedances above $u$ and generalized Pareto model (via Kolmogorov--Smirnov, Cramér--von Mises, etc.)
+3. Perform tests sequentially until rejection, or select the "best" threshold according to the criterion.
+
+:::
+
+## Some proposals
+
+- Idea dates back to @Pickands:1975. 
+- @Choulakian.Stephens:2001, @Bader.Yan.Zhang:2018 (using ForwardStop).
+- Recent proposals using $L$-moment estimators including @Kiran.Srinivas:2021, @Solari:2017, @SilvaLomba.FragaAlves:2020.
+- Some *ad hoc* proposals [@Thompson:2009] work well in practice.
+
+::: {style="font-size: 70%;"}
+
+Note: goodness-of-fit tests null distributions require adjustment for rounded values (estimate null via Monte Carlo).
+
+:::
+
+<!--
+
+## Testing using maximum likelihood distribution
+
+
+@Thompson:2009 propose using constant values $$\tau_j = \widehat{\sigma}_j - \widehat{\xi}_j u_j$$  and performing Pearson's test of normality for the differences $\tau_{j+1} - \tau_{j}$ ($j=1, \ldots, k-1$), stopping whenever the hypothesis is rejected at level $\alpha = 0.2$.
+
+*Ad hoc* proposal... but works well in simulations.
+
+-->
+
+## Sequential analysis
+
+
+::: {style="font-size: 90%;"}
+
+@Wadsworth:2016 obtains asymptotic joint distribution of MLE from a superposition of Poisson processes.
+
+Build independent increments of shape to form a white noise sequence $\xi^*_i=(\hat{\xi}_{u_{i+1}}-\hat{\xi}_{u_i})/\{(I^{-1}_{u_{i+1}}-I^{-1}_{u_{i}})_{\xi,\xi}^{1/2}\}$.
+
+- Parameter stability plots with simultaneous confidence intervals!
+- White noise test for $\xi^*_i$, with alternative hypothesis $\mathscr{H}_a: \xi^*_i \sim \mathsf{Normal}(\beta, \sigma) (i=1, \ldots, j-1)$ and $\xi^*_i \sim \mathsf{Normal}(0,1)$ for $j, \ldots, k-1$ motivated by results on model misspecification [@White:1982].
+
+:::
+
+## Comments on Wadsworth (2016)
+
+Fails 17% of the time in our simulations with equally spaced quantiles.
+
+
+- Problems with positive definiteness of information matrices for shape increments.
+- Method sensitive to rounding (add noise?) 
+- Must choose the threshold sequence carefully.
+
+<!--
+
+## Bayesian measures of surprise {.smaller}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+@Lee:2015  propose constructing a threshold stability plot showing Bayesian $p$-value for a summary statistic against thresholds, capturing the agreement between sample and simulated data from the posterior distribution.
+
+Under null hypothesis, $p$-values should be around 0.5.
+
+
+- Need replications to assess null distribution (very computationally intensive).
+- Choice of statistic matters!
+
+
+:::
+
+::: {.column width="40%"}
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '100%'
+knitr::include_graphics("figures/Fig-tstabplots3.png")
+```
+
+
+:::
+
+::::
+
+-->
+
+## Predictive distribution
+
+
+
+::: {style="font-size: 85%;"}
+
+@Northrop.Attalides.Jonathan:2017 propose a Bayesian method based on leave-one-out cross validation with a binomial-generalized Pareto (BGP) model and a single validation threshold $v > u_k$ above which we assess the model performance.
+
+The measure of goodness-of-fit proposed is an estimate of the negated Kullback--Leibler divergence,
+\begin{align*}
+ \widehat{T}_v(u_j) = \sum_{i=1}^n \log\widehat{f}_v(x_r \mid \boldsymbol{x}_{-r}, u_j).
+\end{align*}
+The selected threshold is the one maximizing this diagnostic. 
+
+Can use Bayesian model averaging to account for the uncertainty originating from threshold selection.
+
+:::
+
+## Metric-based diagnostic 
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+
+
+::: {style="font-size: 80%;"}
+
+Build quantile-quantile (QQ-) plot, with pointwise confidence intervals obtained using a parametric bootstrap.
+
+For each bootstrap sample $b=1, \ldots, B$, estimate the empirical quantile function $F_{b}$ and evaluate it at the plotting position $p_i=i/(n+1)$ for $i=1, \ldots, n.$
+
+
+@Varty.Tawn:2021 and @Murphy.Tawn.Varty:2024 propose repeating this with simulated iid data from $F_0$ (tolerance intervals).
+
+:::
+
+:::
+
+::: {.column width="40%"}
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '100%'
+knitr::include_graphics("figures/Varty2021.png")
+```
+
+::: {style="font-size: 50%;"}
+Figure from @Varty.Tawn:2021
+
+:::
+
+:::
+
+::::
+
+## Metric-based adjustment
+
+
+Build metric based on exponential (or generalized Pareto) **quantile** $F_0^{-1}(p_i)$ against $F^{-1}_{b}(p_i)$ with mean absolute difference or mean squared difference.
+
+Pick the threshold with the smallest average distance.
+
+- amenable to different sampling schemes (censoring, non-identically distributed data, time-varying thresholds).
+- computationally-intensive by design.
+
+## Simulation study: comparison of methods 
+
+::: {style="font-size: 80%;"}
+
+We considered 13 different distributions from simulation studies in @Choulakian.Stephens:2001 and @Schneider:2021.
+
+- Consider 1000 replications of IID data, data with serial correlation in the tail, rounded observations, with different tail behaviour.
+- Data of size $n\in \{1000, 2000\}$ with candidate thresholds at the sample $\{0.8, 0.81, \ldots, 0.99\}$ quantiles, keeping a minimum of 20 exceedances.
+- Evaluate bias, variance, RMSE of point estimator for 0.999 quantile.
+- Compare to oracle (model with the closest quantile estimate among candidates).
+
+
+:::
+
+## Which quantile level on average?
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '70%'
+knitr::include_graphics("figures/thresh_simulation1.png")
+```
+
+
+## Findings 
+
+- No universally better method.
+- Many of the automated procedures return the lowest possible threshold.
+- Using Forward stop method to account for multiple testing leads to thresholds that are much lower.
+
+## More comments
+
+::: {style="font-size: 80%;"}
+
+
+- The oracle method returns average threshold around the 87% and the 90% quantile.
+- Mean residual life plots are uniformly scattered.
+- @Varty.Tawn:2021's metric diagnostic leads to very small  thresholds.
+- @Northrop.Attalides.Jonathan:2017 and @Thompson:2009 lead to a greater variability of selected quantile levels for the thresholds but are variable. 
+- Wadsworth's sequential testing performs best with heavy tailed distributions, but otherwise is not competitive in the rankings.
+
+:::
+
+## Conclusions and future work
+
+Is the problem well-formulated? There is no "correct" threshold, so are we barking up the wrong tree?
+
+Some alternatives:
+
+- Weighting with different threshold choices to account for uncertainty [@Stein:2023].
+- Should we be fitting sub-asymptotic models to much more data? 
+
+## Question period 
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+Thank you for your attention and thanks to the conference organizers.
+
+
+Preprint coming (hopefully) soon on arXiv.
+
+:::
+
+::: {.column width="45%"}
+
+
+See you in Montréal, July 5th-9th, 2027!
+
+Thanks to NSERC for funding
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '50%'
+knitr::include_graphics("figures/NSERC.png")
+```
+
+:::
+
+::::
+
+
+::: {style="font-size: 90%;"}
+
+Slides at [`lbelzile.github.io/EVA2025-choosing-threshold`](https://lbelzile.github.io/EVA2025-choosing-threshold)
+
+:::
+
+## Semiparametric methods
+
+The paper also compares 18 different semiparametric methods using Hill-type estimators for heavy-tailed data.
+
+- Careful: many numerical implementations don't specify a minimum sample size!
+- Primer: best methods include @Caeiro.Gomes:2016, @Gomes.Figueiredo.Neves:2012, @Wager:2014.
+
+## Don't use the following 
+
+
+
+::: {style="font-size: 80%;"}
+
+- Methods based on minimization of the asymptotic mean squared error can break down catastrophically for particular data sets.
+- Methods by @Gomes:2013 and @Hall.Welsh:1985 behave erratically with small shape parameters: these procedures lead to strongly biased shape parameter estimates. This is due to them keeping more than 15\% of the data for inference.
+- @Drees.Kaufmann:1998 bias-reduction method leads to large width of confidence intervals (unwanted variability). Many other methods are also extremely variable.
+
+:::
+
+## Testing using maximum likelihood distribution
+
+
+@Thompson:2009 propose using constant values $$\tau_j = \widehat{\sigma}_j - \widehat{\xi}_j u_j$$  and performing Pearson's test of normality for the differences $\tau_{j+1} - \tau_{j}$ ($j=1, \ldots, k-1$), stopping whenever the hypothesis is rejected at level $\alpha = 0.2$.
+
+*Ad hoc* proposal... but works well in simulations.
+
+
+## References
+
+
+

@@ -1,0 +1,1611 @@
+---
+title: "Choosing the threshold in extreme value analysis"
+author: "Léo Belzile, HEC Montréal"
+subtitle: "ZüKoSt: Seminar on Applied Statistics"
+date: "2025-11-20"
+date-format: "dddd, MMM D, YYYY"
+eval: true
+echo: false
+cache: true
+standalone: true
+bibliography: threshold.bib
+format:
+  revealjs:
+    slide-number: true
+    html-math-method: mathjax
+    preview-links: auto
+    theme: [simple, hecmontreal.scss]
+    title-slide-attributes:
+      data-background-color: "#002855"
+    logo: "figures/logo_hec_montreal_bleu_web.png"
+    revealjs-plugins:
+       - revealjs-text-resizer
+    include-in-header: 
+      text: |
+        <style>
+        .v-center-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 90%;
+        }
+        </style>
+---
+
+
+```{r}
+#| include: false
+hecbleu <- c("#002855")
+fcols <- c(gris = "#888b8d",
+           bleu = "#0072ce",
+           aqua = "#00aec7",
+           vert = "#26d07c",
+           rouge = "#ff585d",
+           rose = "#eb6fbd",
+           jaune = "#f3d03e")
+pcols <- c(gris = "#d9d9d6",
+           bleu = "#92c1e9",
+           agua = "#88dbdf",
+           vert = "#8fe2b0",
+           rouge = "#ffb1bb",
+           rose = "#eab8e4",
+           jaune = "#f2f0a1")
+library(tea, warn.conflicts = FALSE)
+library(ggplot2)
+theme_set(theme_classic())
+library(patchwork)
+library(knitr)
+library(mev)
+conflicted::conflict_prefer("ggplot", winner = "ggplot2", quiet = TRUE)
+knitr::opts_chunk$set(
+  fig.retina = 3, 
+  dev = "ragg_png",
+  fig.align = "center", 
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  collapse = TRUE)
+options(digits = 3, width = 75)
+Sys.setlocale("LC_TIME", "en_CA.utf8")
+```
+
+## Motivation 
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+::: {style="font-size: 90%;"}
+Consider daily total rainfall data from Padova for July--September over the period 1878--2016, yielding $n=3311$ data points in excess of 2mm [@Marani.Zanetti:2015].
+
+:::
+
+:::
+
+
+
+::: {.column width="60%"}
+```{r}
+#| warning: false
+#| message: false
+#| out-width: '100%'
+#| cache: true
+library(xts,warn.conflicts = FALSE) # irregular time series
+library(lubridate) # date manipulation
+
+# Change local for plots
+# Sys.setlocale("LC_TIME", "en_CA.utf8")
+
+# Padova data is not widely available
+load("/home/lbelzile/Documents/Dropbox/Publications/Ongoing/Threshold/Paper/data/padova.rda")
+dates <- attr(padova, "date")
+padova_xts <- as.xts(padova, frequency = "day", order.by = dates)
+
+# Create a data frame for ggplot
+padova_df <- data.frame(
+  rain = as.numeric(padova), # strip attributes
+  date = dates,
+  yday = yday(dates),
+  ydayf = factor(yday(dates)),
+  day = yday(dates) / (365 + leap_year(dates)),
+  time = scale(as.numeric(dates))
+)
+
+# Compute proportion of rainfall (non-zero values)
+# as a function of the day of the year
+
+start <- yday(lubridate::ymd("2018-07-01"))
+end <- yday(lubridate::ymd("2018-09-30"))
+ch_inst <- lubridate::ymd("1878-07-01")
+
+padova <- padova_df |>
+  dplyr::filter(
+    date > ch_inst,
+    month(date) %in% 7:9,
+    rain > 0)
+xdate <- seq(
+  from = min(padova$date),
+  to = max(padova$date),
+  length.out = 100
+)
+
+g1 <- ggplot() +
+  geom_segment(
+    data = padova |> dplyr::filter(rain >= 10),
+    mapping = aes(y = rain, x = date, yend = 0)
+  ) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) +
+  labs(
+    subtitle = "summer total daily rainfall (in mm) in Padova",
+    y = ""
+  ) +theme_classic()
+g1 
+```
+:::
+
+::::
+Research question: what is the expected maximum rainfall episode over a 50 year period?
+
+
+::: {.notes}
+
+Typically, records (time series) are short.
+
+The risk quantities of interest cannot reliably be estimated empirically. 
+
+We need a mathematically justified framework for extrapolation.
+
+:::
+
+##  Peaks over threshold
+
+:::: {.columns}
+
+::: {.column width="40%"}
+Extremes from a stationary time series may be modelled by considering only the $n_u$ observations that exceed a threshold $u$.
+
+:::
+
+
+::: {.column width="60%"}
+```{r}
+#| out-width: '100%'
+#| cache: true
+g1 + 
+  geom_hline(yintercept = 50, col = 4, linetype = "dashed") +
+  geom_segment(
+    data = padova |> dplyr::filter(rain >= 50),
+    mapping = aes(y = rain, x = date, yend = 50), 
+    col = 4, linewidth = 1.1
+  )  +theme_classic()
+```
+
+```{r}
+#| eval: false
+#| echo: false
+set.seed(20251120)
+q <- mev::qgp(0.999, shape = 0.1)
+samp <- mev::rgp(n = 100, shape = 0.1)
+ggplot(data = data.frame(x = seq_along(samp),
+                         y = samp)) +
+  geom_hline(yintercept = q, col = "grey50", linetype = "dashed") +
+  geom_segment(mapping = aes(x = x, y = y, yend = 0)) +
+  annotate("text", x = 10, y = q + 1, label = "Pr(X > q)?") +
+  labs(y = "value", x = "time index") +
+  scale_x_continuous(limits = c(1, NA), expand = expansion()) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(),
+                     breaks = c(0,3,6,9, q),
+                     labels = c("0","3","6","9","q")) +
+  theme_classic()
+```
+
+:::
+
+::::
+
+The threshold $u$ is a fixed location parameter determined by the user. 
+
+## Mathematical framework
+
+
+Under mild conditions, there exists a positive function $\sigma_u$ such that,   as $u$ approaches the upper support point of $Y$, 
+\begin{equation}\label{eq1}
+\Pr\{(Y-u)/\sigma_u>y\mid Y>u\} \to (1 + \xi y)_+^{-1/\xi}, \quad y>0,
+\end{equation}
+uniformly in $y$. 
+
+
+Exceedances $X = Y-u >0$ over a sufficiently high threshold $u$ are thus approximately  **generalized Pareto** distributed. We write $X \sim \textsf{GP}(\sigma_u, \xi).$
+
+
+
+<!-- \begin{align*} -->
+<!-- \Pr(X\leq x)\approx \begin{cases} 1 - (1 + \xi x/\sigma_u)_+^{-1/\xi}, & \xi\neq 0,\\ 1-\exp(-x/\sigma_u),& \xi=0, \end{cases} \quad x> 0. -->
+<!-- \end{align*} -->
+
+## Risk measures and extrapolation
+
+\begin{align*}
+\Pr(Y > v) &= \Pr(Y > v \mid Y>u)\Pr(Y > u)
+\\ & \approx \{1 + \xi (v-u)/\sigma_u\}_+^{-1/\xi} \zeta_u
+\end{align*}
+
+
+::: {style="font-size: 80%;"}
+
+There are three parameters:
+
+- the scale $\sigma_u$ (threshold dependent),
+- the shape $\xi$,
+- the probability of exceedance $\zeta_u = \Pr(Y > u)$. 
+
+:::
+
+Most risk measures of interest are functionals of the parameters.
+
+
+## Risk measures
+
+Let $G(x; \sigma_u, \xi)$ denotes the generalized Pareto distribution function above $u$. 
+
+If there are on average $n_y$ observations per year, then the $N$ year maximum distribution above $u$ is approximately $$G^{Nn_y\zeta_u}(x; \sigma_u, \xi).$$
+
+We can also consider the $N$ year return level, the quantile of an annual maximum exceeded with probability $1/N$ in any given year, $G^{-1}\{1-1/(\zeta_u n_y N)\}.$
+
+## Expected value of 50-year maximum
+
+
+
+
+```{r}
+#| out-width: '80%'
+#| cache: true
+#| label: fig-post
+#| fig-cap: "Bayesian and frequentist inference based on a threshold of $u=30$mm."
+load("/home/lbelzile/Documents/Dropbox/Publications/Ongoing/Threshold/Code/application/Padova_exceedances.RData")
+n <- length(rain)
+npy <- n / (2016 - 1878)
+ui <- 30
+prior <- revdbayes::set_prior(
+  prior = "flat", 
+  model = "gp",
+  min_xi = -1, 
+  max_xi = 1)
+set.seed(2025)
+postsamp <- with(revdbayes::rpost_rcpp(
+  n = 10000, 
+  model = "bingp", 
+  data = rain, 
+  thresh = ui, 
+  prior = prior),
+  cbind(bin_sim_vals, sim_vals))
+colnames(postsamp) <- c("zeta","sigma","xi")
+post_df <- as.data.frame(postsamp) |>
+  dplyr::mutate(m = 50 * npy * zeta,
+                Nmean = (sigma / xi * (m^xi - 1) + sigma) / (1 - xi))
+g00 <- ggplot(data = post_df, aes(x = Nmean + ui)) + 
+  geom_density() +
+  scale_x_continuous(limits = c(50, 350)) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) +
+  labs(x = "expected value of 50 year maximum",
+       subtitle = "posterior density",
+       y = "") +
+  theme_classic()
+
+
+prof_gpd <- mev::gpd.pll(
+    param = "Nmean",
+    psi = seq(80, 300, length.out = 101),
+    dat = rain[rain > ui],
+    thresh = ui,
+    N = 50 * npy * mean(rain>ui),
+    plot = FALSE
+  )
+conf <- confint(prof_gpd)
+g01 <- ggplot(data = data.frame(
+  psi = prof_gpd$psi, 
+  loglik = prof_gpd$pll - prof_gpd$maxpll,
+  dens = dnorm(sign(prof_gpd$pars[,1] - prof_gpd$mle[1]) * sqrt(-prof_gpd$pll + prof_gpd$maxpll))),
+  mapping = aes(x = psi, y = loglik))  + 
+  geom_hline(
+     yintercept = -qchisq(c(0.95, 0.99), 
+                          df = 1)/2, 
+     col = "grey", 
+     alpha = 0.4,
+     linetype = "dashed") +
+     geom_vline(xintercept = conf[2:3],
+                alpha = 0.1) +
+  geom_line() + 
+  scale_y_continuous(limits = c(NA,0), expand = expansion()) +
+  labs(x = "expected value of 50 year maximum",
+      subtitle = "neg. profile log likelihood", y = "") +
+  theme_classic()
+# plot(prof_gpd)
+g00  + g01
+```
+
+## Guided recipe
+
+
+In the simplest applications:
+
+1. **we choose a high threshold $u$ or equivalently $n_u$.**
+2. we fit the limiting generalized Pareto distribution with scale $\sigma_u$ and shape $\xi$ to exceedances $Y-u$ above the threshold $u$.
+3. we use the resulting model for extrapolation beyond $u$.
+
+
+# How to choose the threshold?  {background-color="`{r} hecbleu`" .white}
+
+
+
+## Objective 
+
+We provide an extensive review of threshold selection mechanisms for peaks over threshold analysis, including
+
+- visual diagnostics,
+- extended generalized Pareto models,
+- goodness-of-fit tests,
+- semiparametric methods based on Hill's estimator.
+
+We also perform simulation experiments to assess their performances over a range of distribution, with rounded and serially correlated data.
+
+
+## Why another survey paper?
+
+There are earlier reviews of the topic, but the literature keeps increasing...
+
+- The most comprehensive reviews are @Scarrott.MacDonald:2012, @Caeiro.Gomes:2016 and @Langousis:2016.
+- Selective numerical comparisons in @Gomes.Oliveira:2001, @Schneider:2021 and @Murphy.Tawn.Varty:2024, among others. 
+
+More than 40 methods implemented and compared through simulations.
+
+
+
+## Hill estimator
+
+For a random sample $Y_{(1)} \leq \cdots \leq Y_{(n)},$ the @Hill:1975 estimator for $\xi>0$ is 
+$$H_{n,n_u} = \frac{1}{n_u} \sum_{i=n-n_u+1}^{n} \log Y_{(i)} - \log Y_{(n-n_u)}.$$
+The @Weissman:1978 estimator of the quantile at level $1-p$ is $$Q_{n_u}(1-p) = Y_{(n-n_u)}\{n_u/(pn)\}^{H_{n,n_u}}.$$
+
+## Maximum likelihood estimator
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+Treat exceedances above $u$ as an exact sample from generalized Pareto, estimate parameters using @Grimshaw:1993 algorithm. 
+
+```{r}
+#| cache: true
+set.seed(20251120)
+mle <- fit.gpd(xdat = rain, threshold = 50)
+boot <- mev::gpd.boot(object = mle, B = 1000)
+colnames(boot)[1] <- "sigma"
+ggplot(data = as.data.frame(boot),
+       mapping = aes(x = sigma, y = xi)) +
+  geom_point() +
+  geom_abline(
+    intercept = 0, slope = -1/(max(rain) - 50), linetype = "dashed") +
+  labs(x = expression(sigma[u]), y = expression(xi)) +
+  theme_classic()
+```
+
+:::
+
+
+::: {.column width="50%"}
+
+
+::: {style="font-size: 80%;"}
+
+
+- Works for $\xi \in \mathbb{R}$. 
+- Readily extends to different sample schemes (censoring, truncation, dependence on covariates)
+- Coherent framework for testing and extrapolation 
+- Larger variance than Hill estimator for $\xi$.
+
+:::
+
+:::
+
+::::
+
+
+:::{.notes}
+
+Asymptotic normality depends on second-order conditions, which are distribution specific.
+
+
+The variance of the MLE of $\xi$ is $(1+\xi)^2,$ versus $\xi^2$ for the Hill estimator.
+
+:::
+
+---
+
+```{r}
+#| out-width: "90%"
+#| cache: true
+#| label: fig-shapequant
+#| fig-cap: "Estimates of shape (left) and 100-year return level (right) as a function $n_u$ corresponding to threshold $X_{(n-n_u)}.$"
+load("/home/lbelzile/Documents/Dropbox/Publications/Ongoing/Threshold/Paper/data/Padova_exceedances.RData")
+load("shape_quantile_Padova.RData")
+# # Illustration of the sensitivity of conclusions to the choice of threshold
+rain <- sort(rain, decreasing = TRUE)
+kmax <- sum(rain > min(u))
+nexc <- 20:kmax
+# mle <- matrix(nrow = length(nexc), ncol = 4L)
+# colnames(mle) <- c("loc", "scale", "shape", "se_shape")
+# 
+# # First maximum likelihood estimation
+# for (i in nexc) {
+#   fit <- fit.gpd(xdat = rain, threshold = rain[i + 1])
+#   mle[i - nexc[1] + 1, ] <- c(
+#     rain[i],
+#     coef(fit),
+#     fit$std.err[2]
+#   )
+# }
+# 
+# shape_hill <- shape.hill(xdat = rain, k = nexc)
+# # Quantiles estimates for 100 yr return level
+# n <- length(rain)
+# npy <- n / (2016 - 1878)
+# p <- 1 / (npy * 100)
+# quant_hill <- mev::qweissman(
+#   p = p,
+#   k = nexc,
+#   n = n,
+#   thresh = rain[nexc + 1],
+#   shape = shape_hill$shape
+# )
+# # Return levels via max-stability (sanity checks)
+# pexc <- sapply(mle[, 1], function(u) {
+#   mean(rain > u)
+# })
+# quant_mle <- mev::qgp(
+#   p = 1 - 1/(100 * npy * pexc),
+#   loc = mle[, 1],
+#   scale = mle[, 2],
+#   shape = mle[, 3]
+# )
+
+shape_df <- data.frame(
+  x = nexc,
+  shape_mle = mle[,'shape'],
+  shape_Hill = shape_hill$shape,
+  lower_mle =  qnorm(0.025) * abs(1 + mle[, 'shape']) / sqrt(nexc) +  mle[, 'shape'],
+  upper_mle =  qnorm(0.975) * abs(1 + mle[, 'shape']) / sqrt(nexc) +  mle[, 'shape'],
+  lower_Hill = qnorm(0.025) * shape_hill$shape / sqrt(nexc) +  shape_hill$shape,
+  upper_Hill = qnorm(0.975) * shape_hill$shape / sqrt(nexc) +  shape_hill$shape
+) |>
+  tidyr::pivot_longer(
+    cols = -x,
+    names_pattern = "(shape|lower|upper)_(.*)",
+names_to = c( ".value", "estimator"))
+ 
+
+quant_df <- data.frame(
+  x = nexc,
+  quant_mle = confint_mle[,1],
+  quant_Hill = quant_hill,
+  lower_mle = confint_mle[,2],
+  upper_mle = confint_mle[,3],
+  lower_Hill = NA,
+  upper_Hill = NA
+)  |>
+  tidyr::pivot_longer(
+    cols = -x,
+    names_pattern = "(quant|lower|upper)_(.*)",
+names_to = c( ".value", "estimator"))
+
+g_shape <- ggplot(
+  data = shape_df |> dplyr::filter(x <= 500),
+  mapping = aes(
+    x = x,
+    y = shape,
+    ymin = lower,
+    ymax = upper,
+    col = estimator,
+    fill = estimator
+  )
+) +
+  geom_ribbon(alpha = 0.1) +
+  geom_line() +
+  # geom_point() +
+  scale_color_viridis_d(option = "D", end = 0.8) +
+  scale_fill_viridis_d(option = "D", end = 0.8) +
+  labs(x = "number of exceedances") +
+  theme_classic() +
+  theme(legend.position = "bottom")  +theme_classic()
+
+g_quant <- ggplot(
+  data = quant_df |> dplyr::filter(x <= 500),
+  mapping = aes(
+    x = x,
+    y = quant,
+    ymin = lower,
+    ymax = upper,
+    col = estimator,
+    fill = estimator
+  )
+) +
+  geom_ribbon(alpha = 0.1) +
+  geom_line() +
+  # geom_point() +
+  scale_color_viridis_d(option = "D", end = 0.8) +
+  scale_fill_viridis_d(option = "D", end = 0.8) +
+  labs(x = "number of exceedances", y = "100 year return level (in mm)") +
+  theme_classic() +
+  theme(legend.position = "bottom")  +theme_classic()
+g_shape +
+  g_quant +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+```
+
+
+
+## Bias and variance trade-off
+
+
+- The quality of the generalized Pareto approximation improves as $u$ converges to the endpoint. Taking $u$ too low increases the risk of biased extrapolation.
+- Taking $u$ too high will mean that the number of exceedances $n_u$ is small (high uncertainty of estimators of $\sigma_u$ and $\xi$). We need enough data (at least $n_u=20$, say).
+
+::: {.notes}
+
+
+The likelihood for the whole data includes a binomial component for $\zeta_u = \Pr(Y > u)$ (binomial). This parameter is orthogonal to $(\sigma_u, \xi).$
+
+:::
+
+## Fixed or random thresholds?
+
+- **random**: $n_u$ is fixed and $u$ is an order statistic (sample value) $Y_{(n-n_u)}$.
+- **fixed**: if $u$ is a fixed quantity (20 mm of rain), then the probability of exceedance $\zeta_u = \Pr(Y > u)$ is random.
+ 
+
+Write $\mathcal{U} = u_1, \le \cdots \le u_K$ for the set of thresholds under consideration.
+
+:::{.notes}
+
+Uncertainty of $\zeta_u$ often ignored, but the latter is smaller. The binomial component is conditionally independent of the generalized Pareto part.
+
+The partial nesting induces dependence, but since samples have different numbers of exceedances, model comparison is difficult.
+:::
+
+
+
+# Properties underlying threshold selection  {background-color="`{r} hecbleu`" .white}
+
+
+## Threshold stability and extrapolation
+
+If $Y-u\sim \mathsf{GP}(\sigma_u,\xi)$, then for any $v>u$ such that $\sigma_v=\sigma_u+ \xi(v-u) > 0$, we have 
+\begin{align*}
+X-v \mid X>v \sim \mathsf{GP}(\sigma_v, \xi)
+\end{align*}
+This property is termed **threshold stability**. The shape is in principle constant.
+
+The mean excess is also linear in $v$:
+\begin{align}
+e(v) = \mathrm{E}(X - v \mid X>v) = \frac{\sigma_u - \xi u}{1-\xi} + \frac{\xi}{1-\xi} v, \quad v\geq u.   \label{eq:mrl}
+\end{align}
+
+## Consistency
+
+
+We work under ''domain of attraction'' condition, meaning that usual asymptotics are only valid if the threshold increases with the sample size.
+
+
+For consistency, we need an intermediate sequence $n_u/n \to 0$, but $n_u, n \to \infty$, e.g., $n_u = \lceil n- n^q\rceil$ for $q \in (0,1)$, with $q=0.995$ or $q=0.999.$ 
+
+Simple rules such as using a fixed proportion of the data by setting $n_u\approx np$ for some fixed $p$, do not satisfy this.
+
+## Second-order regular variation {.smaller}
+
+Suppose that its distribution function $F$ has two continuous derivatives and is continuous at its endpoint.
+
+Let 
+
+- $u_t=F^{-1}(1-1/t)$ be the $1-1/t$ quantile of $F,$
+- $\sigma_t = r(u_t),$ where $r(t) = \{1-F(t)\}/f(t)$ the reciprocal hazard function,
+- $\xi_t = r'(u_t)$ is the penultimate approximation to the shape.
+
+If $u_t$ is twice differentiable and $u_t'$ is eventually positive, then Theorem 2.1 of @deHaan/Resnick:1996 implies $A(t) =\xi_t - \xi,$ the difference between the penultimate and limiting values of the shape parameter.
+
+
+## Asymptotic normality
+
+
+Under a second order regular variation assumption with $\lim_{n_u \to \infty} \sqrt{n_u}A(n/n_u) = \lambda\in \mathbb{R}$, subject to which \citep[Theorem 3.2.5]{deHaan.Ferreira:2006}
+ \begin{align*}
+n_u^{1/2}(H_{n,n_u} - \xi) \to \mathsf{normal}\{\lambda/(1-\rho), \xi^2\}, \quad \rho \leq 0.
+\end{align*}
+
+
+Similar results hold for maximum likelihood estimators.
+
+:::{.notes}
+
+The asymptotic bias, which is unobtainable in finite samples, is dictated by the rate at which the number of extreme observations grows relative to the total sample size, but also by the  function $A(t)$. 
+
+:::
+
+
+## Minimizing mean squared error
+
+
+::: {style="font-size: 80%;"}
+
+
+Many heavy-tailed distributions fall within the @Hall.Welsh:1985 class of distributions have $A(t) = \beta t^\rho$ for $\beta \neq 0$ and $\rho < 0.$
+
+The asymptotic mean squared error $\xi^2/n_u + A^2(n/n_u)/(1-\rho)^2$ gives
+\begin{align}
+n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\frac{1}{1-2\rho}}.
+\end{align}
+
+
+:::
+
+:::{.notes}
+
+Estimation of $\beta$ and $\rho$ is difficult and typically far too noisy to be useful.
+More stable methods are obtained by fixing $\rho$ to a negative value, or bypassing its estimation completely, as in @Wager:2014.
+
+:::
+
+## Penultimate approximations {.smaller}
+
+@smith_1987 show that a better approximation to the tail is obtained by letting the shape vary with $u$, taking $\mathsf{GPD}(\sigma_u, \xi_u)$, where $\xi_u = r'(u).$.
+
+
+```{r}
+#| out-width: '80%'
+#| cache: true
+# Penultimate approximation - Gaussian
+th <- seq(2, 6, by = 0.1)
+penult <- mev::penultimate(
+  family = "norm",
+  method = "pot",
+  thresh = th,
+  ddensF = function(x) {
+    -x * dnorm(x)
+  }
+)
+set.seed(2025)
+penult_mle <- matrix(nrow = length(th), ncol = 2)
+for (i in seq_along(th)) {
+  samp <- TruncatedNormal::rtnorm(
+    n = 1e6,
+    mu = 0,
+    sd = 1,
+    lb = th[i],
+    ub = Inf,
+    method = "invtransfo"
+  )
+  penult_mle[i, ] <- coef(mev::fit.gpd(samp, thresh = th[i]))
+}
+library(ggplot2)
+ggplot(
+  data = data.frame(
+    penultimate = penult$shape,
+    mle = penult_mle[, 2],
+    u = th
+  ) |>
+    tidyr::pivot_longer(
+      cols = -u,
+      names_to = "method",
+      values_to = "shape"
+    ),
+  mapping = aes(x = u, y = shape, linetype = method)
+) +
+  geom_smooth(formula = y ~ x, se = FALSE, col = "black") +
+  geom_hline(yintercept = 0, col = "grey") +
+  labs(
+    x = "threshold",
+    subtitle = "Penultimate shape parameter for POT using Gaussian variates"
+  ) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+```
+
+:::{.notes}
+
+Statistical and mathematical approximations to the limits may differ substantially.
+
+:::
+
+## Point process formulation {.smaller}
+
+The generalized Pareto distribution can be derived from a limiting Poisson process ${\mathcal P}$ under which rare events occur in the $(t,y)$-plane with measure
+\begin{align*}
+\Lambda[(t',t)\times[u,\infty)] = (t_2-t_1)\{1+\xi(u-\eta)/\sigma\}^{-1/\xi}_+, \qquad \eta \in \mathbb{R}, \sigma > 0.
+\end{align*}
+
+
+The vertical coordinates of ${\mathcal P}$ can be generated as 
+\begin{align*}
+\eta + \frac{\sigma}{\xi}\Bigg\{\Bigg(\sum_{j=1}^r E_j\Bigg)^{-\xi} - 1\Bigg\}, \quad r=1,2,\ldots;
+\end{align*}
+where the $E_j$ are independent exponential random variables.
+
+The choice of threshold then amounts to choosing the highest value for which the transformed observations are consistent with a unit-rate Poisson process.
+
+
+## Rényi representation
+
+Threshold-stability and the Markov nature of order statistics $X_{(1)}\leq\cdots\leq X_{(n)}$ of a simple random sample drawn from $\mathsf{GP}(\sigma,\xi)$ imply that 
+
+- $X_{(1)} \sim \mathsf{GP}(\sigma/n,\xi/n)$
+- the increments $X_{(j)}-X_{(j-1)} \mid X_{(j-1)}=x_{(j-1)}$ have $\mathsf{GP}\{\sigma_j, \xi/(n+1-j)\}$ distributions, for $j=2, \ldots, n$, and are independent of the lower order statistics. 
+
+::: {style="font-size: 60%;"}
+
+@Hill:1975 proposes testing for exponentiality, but the departure is very gradual [@Hall.Welsh:1985], so too small thresholds are returned.
+
+:::
+
+# Selection methods {background-color="`{r} hecbleu`" .white}
+
+
+## Common challenges
+
+::: {style="font-size: 80%;"}
+
+Conditional model: only consider data above the threshold.
+
+Consider candidate thresholds $\mathcal{U}$, either fixed $u_1 < \cdots < u_K$ or random.
+
+Resulting problems:
+ 
+- Dependence between estimates, test statistics, $P$-values due to sample overlap.
+- Non-nested models, samples change with the threshold.
+- Multiple testing problem.
+- Potential for automating the selection.
+
+:::
+
+
+## Mean residual life plot
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+::: {style="font-size: 80%;"}
+Mean residual plot [@Davison.Smith:1990], which graphs the empirical mean excesses $e(u)$ against thresholds $u \in \mathcal{U}.$
+
+Common practice is to find a region above which the slope looks **linear**.
+
+Automation proposed by @Langousis:2016 based on weighted regression.
+
+:::
+
+:::
+
+
+::: {.column width="50%"}
+
+```{r}
+#| out-width: '100%'
+rain <- sort(rain, decreasing = TRUE)
+# Mean residual life plot
+mrl <- mev::tstab.mrl(rain, thresh = 15:65, plot = FALSE)
+langousis <- mev::thselect.mrl(
+  rain, thresh = 15:65,
+  plot = FALSE
+)
+ggplot(
+  data = data.frame(
+    cbind(x = mrl$thresh, mrl = mrl$mrl, lower = mrl$mrl + qnorm(0.025)*mrl$sd/sqrt(mrl$nexc),
+          upper = mrl$mrl + qnorm(0.975)*mrl$sd/sqrt(mrl$nexc))
+  ),
+  mapping = aes(
+    x = x,
+    y = mrl,
+    ymin = lower,
+    ymax = upper
+  )
+) +
+  geom_errorbar(col = "grey90") +
+  geom_point(cex = 0.5) +
+  geom_line() +
+  geom_abline(
+    slope =  langousis$slope,
+    intercept = langousis$intercept,
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(expand = expansion()) +
+  labs(
+    x = "quantile (in mm)",
+    y = "",
+    subtitle = "mean residual life"
+  ) +
+  theme_minimal()
+```
+
+:::
+
+::::
+
+## Threshold stability plots
+
+```{r}
+# Parameter stability plots
+tstab <- mev::tstab.gpd(
+  xdat = rain,
+  thresh = u,
+  method = "wald",
+  plot = FALSE
+)
+tstab_df <- data.frame(
+  y = tstab$mle[, 'shape'],
+  lower = tstab$lower[, 'shape'],
+  upper = tstab$upper[, 'shape'],
+  q = qlev,
+  u = u
+)
+# Wadsworth diagnostics
+wdiag <- mev::W.diag(
+  xdat = rain,
+  model = "nhpp",
+  u = u,
+  plots = NULL
+)
+tstab2_df <- data.frame(
+  qlev = c(qlev, rev(qlev)),
+  u = c(u, rev(u)),
+  shape = c(
+    wdiag$MLE[, 'shape'],
+    rev(wdiag$MLE[, 'shape'])
+  ),
+  interv = c(
+    qnorm(0.025) * sqrt(diag(wdiag$Cov)) + wdiag$MLE[, 'shape'],
+    rev(qnorm(0.975) * sqrt(diag(wdiag$Cov)) + wdiag$MLE[, 'shape'])
+  )
+)
+
+g02 <- ggplot() +
+  geom_polygon(
+    data = tstab2_df,
+    mapping = aes(
+      x = u,
+      y = interv
+    ),
+    fill = "grey70",
+    alpha = 0.25
+  ) +
+  geom_point(
+    data = tstab2_df,
+    mapping = aes(x = u, y = shape)
+  ) +
+  scale_y_continuous(
+    breaks = seq(-0.25, 0.5, by = 0.25),
+    labels = c("-0.25", "0", "0.25", "0.5"),
+    limits = c(-0.30, 0.55),
+    expand = expansion(),
+    oob = scales::squish
+  ) +
+  labs(
+    x = "quantile (in mm)",
+    y = "",
+    subtitle = "shape"
+  ) +
+  theme_minimal()
+
+
+# Hill estimator
+hill <- mev::shape.hill(xdat = rain, k = 20:500)
+# Eyeballing
+eyeball <- tea::eye(data = rain)
+g03 <- ggplot(
+  data = hill,
+  mapping = aes(
+    x = k,
+    y = shape,
+    ymin = shape + qnorm(0.025) * shape / sqrt(k),
+    ymax = shape + qnorm(0.975) * shape / sqrt(k)
+  )
+) +
+  geom_pointrange(col = "grey90", size = 1) +
+  geom_point(cex = 0.5) +
+  labs(
+    x = expression("number of exceedances (log"[10] * ")"),
+    y = "",
+    subtitle = "shape"
+  ) +
+  scale_x_continuous(transform = "log10") +
+  theme_minimal()
+
+g02 + g03
+```
+
+:::{.notes}
+
+Difficulty to automate selection, pointwise confidence intervals, and the plots say nothing about goodness-of-fit!
+
+:::
+
+<!-- ## Penultimate effects - quantiles -->
+
+
+<!-- ```{r} -->
+<!-- #| eval: true -->
+<!-- #| echo: false -->
+<!-- #| fig-align: 'center' -->
+<!-- #| out-width: '100%' -->
+<!-- knitr::include_graphics("figures/Fig1.png") -->
+<!-- ``` -->
+
+
+<!-- ::: {style="font-size: 60%;"} -->
+<!-- Conditional quantiles above threshold, rescaled. 45$^{\circ}$ line shows limiting exponential with true conditional quantile (black), MLE based on 1M exceedances (dashed red) and Smith penultimate approximation (green). -->
+
+
+<!-- ::: -->
+
+
+
+## Extended generalized Pareto models
+
+
+
+::: {style="font-size: 80%;"}
+
+Embed generalized Pareto $F(x;\sigma,\xi)$ in a more flexible model using a continuous distribution function $G_\kappa$ on $[0,1]$. The EGP$(\sigma,\xi, G_\kappa)$ distribution function is then
+\begin{align*}
+\Pr(X\leq x) = G_\kappa\{ F(x;\sigma,\xi)\}.                     \end{align*}
+Choose $G$ to keep the tail properties. See the chapter of @Naveau:2025 for a recent review.
+
+- @Papastathopoulos.Tawn:2013: models imply the density at the origin is zero.
+- @Gamet.Jalbert:2022 propose two models, but one leads to non-regular asymptotics (restriction on boundary of the parameter space).
+- @Naveau:2016 additional models with two parameters.
+
+:::
+
+
+## Piecewise generalized Pareto model
+
+@Northrop.Coleman:2014 specify a truncated generalized Pareto distribution with shape $\xi_i$ in interval $[u_{i}, u_{i+1})$, and continuity constraints for the scale parameters.
+
+The model has parameters $\xi_1, \ldots, \xi_K, \sigma,$ and reduces to the generalized Pareto above $u_k$ if $\xi_k = \cdots = \xi_K$.
+
+The power of the test is sensitive to the choice of the largest threshold $u_K$.
+
+:::{.notes}
+
+The model is inspired by previous work of Wadsworth and Tawn, and inspired by the penultimate approximations.
+
+
+The model is very hard to fit, so use score tests.
+
+
+:::
+
+## Extended generalized Pareto models for Padova data
+
+
+
+```{r}
+#| label: fig-extended
+#| fig-cap: "@Northrop.Coleman:2014 score test (left) and confidence intervals for $\\kappa=1$ for EGP distribution (right)"
+# Northrop and Coleman diagnostic
+NCdi <- thselect.ncpgp(
+  xdat = rain,
+  thresh = u
+)
+
+# Extended generalized Pareto  - Papastathoupoulos and Tawn
+fitted.extgp <- tstab.egp(
+  xdat = rain,
+  thresh = u[-length(u)],
+  param = "kappa",
+  type = "profile",
+  model = "gj-beta",
+  plot = FALSE
+)
+penult <- with(
+  fitted.extgp,
+  cbind(
+    x = qlev[-length(qlev)],
+    u = thresh,
+    kappa
+  )
+)
+g12 <- ggplot(
+  data = data.frame(
+    x = qlev[-length(qlev)],
+    y = c(NCdi$pval)
+  ),
+  mapping = aes(x = x, y = y)
+) +
+  geom_hline(
+    yintercept = 0.05,
+    linetype = "dashed",
+    alpha = 0.9
+  ) +
+  geom_point() +
+  scale_y_continuous(
+    limits = c(0, 1),
+    breaks = seq(0, 1, by = 0.25),
+    labels = c("0", "0.25", "0.5", "0.75", "1"),
+    expand = expansion()
+  ) +
+  labs(x = "quantile level", y = "p-value") +theme_classic()
+g13 <- ggplot(
+  data = penult,
+  mapping = aes(
+    x = x,
+    y = estimate,
+    ymin = pmax(0, lower),
+    ymax = upper,
+    col = factor(ifelse(lower > 1 | upper < 1, "black", "grey"))
+  )
+) +
+  geom_hline(yintercept = 1, alpha = 0.5) +
+  geom_pointrange(fatten = 2) +
+  scale_color_grey(start = 0.6, end = 0) +
+  scale_y_continuous(
+    breaks = seq(0, 2, b = 0.5),
+    labels = c("0", "0.5", "1", "1.5", "2")
+  ) +
+  labs(
+    x = "quantile level",
+    y = expression(kappa),
+    color = NULL
+  ) + theme_classic() +
+  theme(legend.position = "none")
+g12 + g13
+```
+
+
+## Extended generalized Pareto models
+
+Test for restriction to generalized Pareto sub-model using likelihood ratio or score tests.
+
+- Could allow for a bit more data to be included, at the expense of additional parameters to estimate (and potentially more variability).
+- Same problems as parameter stability plots (sequential tests, overlapping data).
+
+
+## Splicing models
+
+::: {style="font-size: 80%;"}
+
+Glue a distribution for the bulk with one for the tail using a mixture of disjoint components below $u$ (bulk) and above $u$ (generalized Pareto).
+
+See @Scarrott.MacDonald:2012 and @Hu.Scarrott:2018 for reviews.
+
+
+A ''parametrized tail fraction'' model uses a mixture of truncated distribution $H$ below and generalized Pareto above $u$, with mixing probability $\zeta_u$, 
+\begin{align*}
+F(x; \boldsymbol{\theta}) =
+\begin{cases}
+(1-\zeta_u){H(x; \boldsymbol{\theta})}/{H(u; \boldsymbol{\theta})} ,& x \leq u, \\
+(1-\zeta_u) + \zeta_u\left\{1-\left(1+\xi\frac{x-u}{\sigma}\right)^{-1/\xi}\right\} ,& x > u.
+\end{cases}
+\end{align*}
+
+:::
+
+## Splicing models for Padova data
+
+
+```{r}
+#| cache: true
+library(evmix)
+mixtgamma <- fgammagpd(
+  x = rain,
+  useq = u,
+  fixedu = TRUE,
+  method = "Nelder-Mead",
+)
+mixtgammacon <- fgammagpdcon(
+  x = rain,
+  phiu = TRUE,
+  useq = u,
+  fixedu = TRUE,
+  method = "Nelder-Mead"
+)
+g31 <- ggplot() +
+  geom_histogram(data = data.frame(x = rain), 
+                 mapping = aes(x, after_stat(density)), 
+                 alpha = 0.1) + 
+  stat_function(
+   fun = dgammagpd,
+   args = list(
+      gshape = mixtgamma$gshape, 
+      gscale = mixtgamma$gscale, 
+      u = mixtgamma$u, 
+      sigmau = mixtgamma$sigmau, 
+      phiu = mixtgamma$phiu,
+      xi = mixtgamma$xi),
+   xlim = c(0, max(rain)), 
+   n = 1001
+  ) +
+  stat_function(
+   fun = dgammagpdcon,
+   args = list(
+      gshape = mixtgammacon$gshape, 
+      gscale = mixtgammacon$gscale, 
+      u = mixtgammacon$u, 
+      sigmau = mixtgammacon$sigmau, 
+      phiu = mixtgammacon$phiu,
+      xi = mixtgammacon$xi),
+   xlim = c(0, max(rain)), 
+   linetype = "dashed",
+   n = 1001
+  ) +
+  geom_vline(xintercept = mixtgamma$u, linetype = "dashed") +
+  labs(x = "total rainfall (in mm)", y = "density") +
+  scale_y_continuous(limits = c(0, NA), expand = expansion())  +theme_classic()
+
+g32 <- ggplot(
+  data = data.frame(
+    threshold = u,
+    discontinuous = -mixtgamma$nllhuseq + min(mixtgamma$nllhuseq),
+    continuous = -mixtgammacon$nllhuseq + min(mixtgammacon$nllhuseq)
+  ) |>
+    tidyr::pivot_longer(
+      cols = -1,
+      names_to = c("constraint"),
+      values_to = "profile"
+    ),
+  mapping = aes(
+    x = threshold,
+    y = profile,
+    linetype = constraint
+  )
+) +
+  geom_line() +
+  scale_color_grey() +
+  scale_y_continuous(
+    limits = c(NA, 0),
+    expand = expansion(),
+    labels = scales::label_number(drop0trailing = TRUE)
+  ) +
+  labs(
+    y = "profile log-likelihood",
+    x = "threshold (in mm)"
+  ) +
+  theme_classic() +
+  theme(legend.position = "right")
+g31 + g32
+
+```
+
+
+## Drawback and advantages of splicing models
+
+Model all of the data, but need flexible models for bulk (kernel density mixtures). The choice of $u$ still critical.
+
+- If $u$ is a parameter, the profile likelihood for threshold $u$ needs not be monotone.
+- Fit of the tail may be driven by bulk (sample contamination)
+- Sharp discontinuity at $u$, continuity constraints or random threshold [@doNascimento.Gamerman.Lopes:2012] alleviate this somewhat.
+
+
+## Goodness-of-fit measures
+
+::: {style="font-size: 90%;"}
+
+1. Fit a generalized Pareto distribution at each candidate threshold.
+2. Compute either
+   - a suitable statistic which indicates departure from the postulated distribution.
+   - a measure of discrepancy between empirical distribution of exceedances above $u$ and generalized Pareto model (via Kolmogorov--Smirnov, Cramér--von Mises, etc.)
+3. Perform tests sequentially until rejection, or select the "best" threshold according to the criterion.
+
+:::
+
+## Some proposals
+
+- Idea dates back to @Pickands:1975. 
+- @Choulakian.Stephens:2001, @Thompson:2009, @Bader.Yan.Zhang:2018 (using ForwardStop).
+- Recent proposals using $L$-moment estimators including @Kiran.Srinivas:2021, @Solari:2017, @SilvaLomba.FragaAlves:2020.
+
+
+
+::: {style="font-size: 70%;"}
+
+Note: goodness-of-fit tests null distributions require adjustment for rounded values (estimate null via Monte Carlo).
+
+:::
+
+## Metric-based adjustment
+
+
+
+::: {style="font-size: 70%;"}
+The visual assessment of model quality often uses a quantile-quantile plot. @Varty.Tawn:2021, @Murphy.Tawn.Varty:2024 and @Collings:2025 propose comparing Q-Q plot positions with expected ones, accounting for estimation uncertainty. The recommended metric is the mean absolute error between quantiles. The selected threshold is the one that minimizes the metric.
+
+- obtain maximum likelihood estimates above $u,$ say $\widehat{\sigma}_u, \widehat{\xi}_u.$
+- fix a grid $\mathcal{P} = p_1 \leq \cdots \leq p_m$ of probability levels at which to evaluate the fit.
+- generate $B$ bootstrap samples of exceedances and fit the generalized Pareto model to get $\widehat{\sigma}^{(b)}_u, \widehat{\xi}^{(b)}_u$ for $b=1, \ldots, B.$
+- obtain the $x$-axis positions using the generalized Pareto quantile function with parameters $\widehat{\sigma}^{(b)}_u, \widehat{\xi}^{(b)}_u.$
+- obtain the $y$-axis positions from the empirical quantile function evaluated at $\mathcal{P}.$
+- compute the average metric over plotting positions $\mathcal{P}$ and the $B$ bootstrap samples.
+
+
+
+:::
+
+## Metric-based adjustment
+
+```{r}
+set.seed(2025)
+vmetric <- mev::thselect.vmetric(
+  xdat = rain,
+  thresh = u,
+  B = 1000,
+  uq = TRUE,plot = FALSE
+)
+
+thid <- which(vmetric$thresh %in% vmetric$thresh0)
+tdat <- sort(vmetric$xdat[vmetric$xdat > vmetric$thresh0]) - vmetric$thresh0
+np <- nrow(vmetric$tolerance)
+xp <- qgp(
+  p = ppoints(np),
+  loc = 0,
+  scale = vmetric$scale[thid],
+  shape = vmetric$shape[thid]
+)
+obs_quant_sim <- vmetric$tolerance
+theo_quant_sim <-
+  apply(
+    apply(
+      matrix(
+        rgp(
+          n = 1000 * np,
+          scale = vmetric$scale[thid],
+          shape = vmetric$shape[thid]
+        ),
+        ncol = np
+      ),
+      1,
+      sort
+    ),
+    1,
+    quantile,
+    probs = c(0.025, 0.975)
+  )
+
+n <- length(tdat)
+above_sim_int <- obs_quant_sim[, 1] > theo_quant_sim[2, ]
+below_sim_int <- obs_quant_sim[, 2] < theo_quant_sim[1, ]
+point_colours <- rep(1, np) #black
+point_colours[above_sim_int] <- 2 #red
+point_colours[below_sim_int] <- 4 #blue
+lims <- c(
+  0,
+  pmax(tdat[n], obs_quant_sim[np, 2], theo_quant_sim[2, np])
+)
+g33 <- ggplot() +
+  geom_polygon(
+    data = data.frame(
+      x = c(xp, rev(xp)),
+      y = c(theo_quant_sim[1, ], rev(theo_quant_sim[2, ]))
+    ),
+    mapping = aes(x = x, y = y),
+    fill = "grey90"
+  ) +
+  geom_segment(
+    data = data.frame(
+      x = xp,
+      y0 = obs_quant_sim[, 1],
+      y1 = obs_quant_sim[, 2],
+      col = factor(point_colours)
+    ),
+    mapping = aes(x = x, y = y0, yend = y1, col = col),
+    linewidth = 0.5
+  ) +
+  scale_color_grey() +
+  labs(
+    y = 'sample quantiles',
+    x = 'theoretical quantiles'
+  ) +
+  scale_x_continuous(
+    limits = c(0, xp[np] + 0.1),
+    expand = expansion(add = c(0, 1))
+  ) +
+  scale_y_continuous(limits = lims, expand = expansion(add = c(0, 1))) +
+  theme_classic() +
+  theme(legend.position = "none")
+g31 <- ggplot(
+  data = data.frame(thresh = vmetric$thresh,
+                    logMAE = log(vmetric$metric)),
+  mapping = aes(x = thresh, y = logMAE)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = vmetric$thresh0, linetype = "dashed") +
+  labs(y = "log of mean absolute error", x = "threshold (in mm)") + 
+  theme_classic()
+g33 + g31
+```
+
+
+## Bayesian predictive distribution
+
+
+
+::: {style="font-size: 85%;"}
+
+@Northrop.Attalides.Jonathan:2017 propose a Bayesian method based on leave-one-out cross validation with a binomial-generalized Pareto (BGP) model and a single validation threshold $v > u_k$ above which we assess the model performance.
+
+The measure of goodness-of-fit proposed is an estimate of the negated Kullback--Leibler divergence,
+\begin{align*}
+ \widehat{T}_v(u_j) = \sum_{i=1}^n \log\widehat{f}_v(x_r \mid \boldsymbol{x}_{-r}, u_j).
+\end{align*}
+The selected threshold is the one maximizing this diagnostic. 
+
+Can use Bayesian model averaging to account for the uncertainty originating from threshold selection.
+
+:::
+
+## Bayesian measures
+
+```{r}
+#| out-width: '70%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/fig-surprise-Bayesian.png")
+```
+
+
+## Semiparametric methods
+
+Threshold selection is typically based on  minimizing an asymptotic mean squared error for Hill's estimator.
+
+These procedures either 
+
+- estimate higher-order parameters that appear in the asymptotic mean squared error formula, or 
+- fix them (e.g., setting $\rho=-1$), or
+- use bootstrap schemes to circumvent having to do so.  
+
+## Bootstrap methods based on @Hall:1990
+
+
+::: {style="font-size: 70%;"}
+
+- estimate the shape parameter using Hill's estimator with the $n_0$ largest order statistics;
+- perform a bootstrap loop ($B$ replications):  resample $m < n$ observations with replacement and compute Hill's estimator for the $n_m=1, \ldots, m$ largest order statistics. Denote the shifted estimates for the $b$th bootstrap replicate $d^{(b)}_{n_m}=(\widehat{H}^{(b)}_{m, n_m} - \widehat{H}_{n, n_0})^2$;
+- average $d^{(b)}_{n_m}$ over all bootstrap replications  for each $n_m=1, \ldots, m$ and select $\widehat{n}_m$ that minimizes the mean squared error.
+- for given $\rho$, compute the optimal number of exceedances for the full sample $\widehat{n}_u = \widehat{n}_m(n/m)^{-2\rho/(1-2\rho)}.$
+
+
+The method is sensitive to the choice of $n_0$ and $m=\mathrm{o}(n)$, which is left to the user
+
+:::
+
+## Semiparametric methods
+
+Other proposals [@Goegebeur.Beirlant.deWet:2008,@Bladt:2020,@Schneider:2021] relate the bias and MSE of Hill estimator with other estimators for $\xi>0$, and use these to minimize the mean squared error under the assumption $\rho=-1.$
+
+
+## Random block maxima
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| out-width: '100%'
+par(bty = "l")
+rbm::rbm.plot(sort(rain, decreasing = TRUE)[1:1000])
+```
+
+:::
+
+::: {.column width="50%"}
+
+
+::: {style="font-size: 90%;"}
+@Wager:2014 propose an alternative estimator (random block maxima) based on $U$-statistics, whose sample paths are $\mathcal{C}^{\infty}$ as a function of $n_u.$ 
+
+Approximating the bias using the derivative of the sample path (which is its expected value up to scaling) leads to an empirical minimization of the MSE.
+
+:::
+
+:::
+
+::::
+
+# Simulation results  {background-color="`{r} hecbleu`" .white}
+
+## Setting
+
+::: {style="font-size: 70%;"}
+
+We generate $n=2000$ observations from 16 distributions with varying shape parameters.
+
+We set the fixed grid $\mathcal{U}$ at the empirical $\{0.8, 0.81, \ldots, 0.98\}$ quantiles.
+
+:::
+
+```{r}
+#| out-width: '80%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/penultimate_shapes.png")
+```
+
+
+
+## How to benchmark methods?
+
+What makes a threshold procedure good? In practice, we care about the extrapolation, often
+
+- a high quantile (return level), or
+- a probability of exceedance.
+
+Benchmarking the method based on proximity with the asymptotic shape parameter is **not** a good point of reference.
+
+
+
+## Parametric methods
+
+```{r}
+#| out-width: '100%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/fig-simulation1-meanpercentile.png")
+```
+
+
+## Comments
+
+::: {style="font-size: 70%;"}
+
+- The oracle returns thresholds that are on average between the 0.87 and the 0.9 quantiles, but is quite variable.
+- Many of the automated procedures return the lowest possible threshold, with the mode for most scenarios being the 0.8 quantile. Exceptions are the procedures of  @Thompson:2009, @Northrop.Coleman:2014 and @SilvaLomba.FragaAlves:2020, which have higher modes.
+- Application of ForwardStop leads to thresholds that are much lower, and is therefore not recommended.
+- The coefficient of variation method of @Castillo.Padilla:2016 nearly always selects the lowest possible threshold, across all simulation scenarios considered. It also fails often, and cannot be recommended.
+
+:::
+
+
+
+## Comments
+
+::: {style="font-size: 70%;"}
+
+- The methods of  @Thompson:2009, @Suveges.Davison:2010, @Northrop.Attalides.Jonathan:2017, @SilvaLomba.FragaAlves:2020 and @Kiran.Srinivas:2021 lead to much less agreement and a greater variability of selected quantile levels for the thresholds.
+- @Wadsworth:2016 sequential testing fails 17% of the time, even after reducing the number of thresholds considered and with sample sizes of 1000 observations. It performs best with heavy tailed distributions, and is generally competitive.
+ - The procedures of @Varty.Tawn:2021 and @Murphy.Tawn.Varty:2024 perform well relative to the oracle (except for distribution $j$), but tend to select very low thresholds. Their relative performance however varies much.
+- The Bayesian model averaging method of @Northrop.Attalides.Jonathan:2017 is competitive in all scenarios.
+
+:::
+
+## Semiparametric methods (shape parameters)
+
+```{r}
+#| out-width: '80%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/Fig-shape_2K_semipar_none.png")
+```
+
+## Semiparametric methods (number of exceedances)
+
+```{r}
+#| out-width: '80%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/Fig-orderstat_2K_semipar_none.png")
+```
+## Comments
+
+
+::: {style="font-size: 70%;"}
+
+- The Hill estimator struggles with distributions for which $\xi$ is low, but excels for very heavy tailed distributions. The exponential estimator and the random block maxima are more variable for the latter case; 
+- The @Beirlant.Vynckier.Teugels:1996b procedure is extremely variable, both for the selection of $n_u$ and for the estimation of $\xi$. It often fails to fit.
+- The methods of @Hall.Welsh:1985 and @Caeiro.Gomes:2014  behave erratically with small shape parameters, giving shape parameter estimates that show strong upward bias. They retain more than 15\% of the data for inference, with a wide range of values of order statistics $n_u$.
+- The proposals of @Bladt:2020 and @Schneider:2021 work very well in the heavy-tailed case.
+
+:::
+
+## Comments
+
+
+::: {style="font-size: 70%;"}
+
+- The minimization of AMSE of @Caeiro.Gomes:2016 and @Gomes.Figueiredo.Neves:2012 display low relative root mean squared error for quantile estimation, consistently across all scenarios, although the methods based on minimization of the asymptotic mean squared error can break down catastrophically.
+- The method with the lowest relative bias for quantiles is @Guillou.Hall:2001, the lower mean squared errors are given by the @Danielsson:2019 minimization of the Kolomogorov--Smirnov distance (for $\xi < 0.25$) and @Bladt:2020 ($\xi \geq 0.5$); 
+- @Drees.Kaufmann:1998 fails to return valid values for $n_u$ in around 80\% of cases. When it works, it leads to small values of $n_u$, and to shape estimates that are below average and too variable.
+
+:::
+
+
+## Comments
+
+
+::: {style="font-size: 70%;"}
+
+- The @Dupuis.Victoria-Feser:2003 estimator leads to very small number of exceedances, and thus variable and negatively-biased shape estimates, but performs best for quantile estimation for low shape parameter.
+- The sampling distributions of the shape parameters for the methods of @Reiss.Thomas:2007 are left-skewed.
+
+
+:::
+
+## Conclusions
+
+
+::: {style="font-size: 90%;"}
+
+- There is no clear winner, but some methods are clearly suboptimal.
+- *Ad hoc* methods, e.g., @Thompson:2009, sometimes works well.
+- Estimation of second order parameters is difficult and typically far too noisy to be useful. More stable methods are obtained by fixing $\rho$ to a negative value, or bypassing its estimation completely, as in @Wager:2014.
+-  Many algorithms consider all potential choice of threshold, irrespective of the minimum number of exceedances needed for reliable estimation, or of the fact only the largest observations should be selected.
+
+:::
+
+## Conclusions
+
+Are we barking up the wrong tree?
+
+- Is the problem well-formulated? there is no ``correct'' threshold.
+- Threshold selection has often a tremendous impact on conclusion, so perhaps it would make more sense to fit sub-asymptotic models to much more data, while avoiding if possible contamination. 
+- Weighting and model averaging to account for model uncertainty is promising, but validation criteria have huge impacts.
+
+
+
+## Question period 
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+
+Thank you for your attention.
+
+:::
+
+::: {.column width="45%"}
+
+
+Thanks to NSERC for funding
+```{r}
+#| eval: true
+#| echo: false
+#| fig-align: 'center'
+#| out-width: '50%'
+knitr::include_graphics("figures/NSERC.png")
+```
+
+:::
+
+::::
+
+
+::: {style="font-size: 90%;"}
+
+Slides at [`lbelzile.github.io/ZuKoSt-2025-choosing-threshold`](https://lbelzile.github.io/ZuKoSt-2025-choosing-threshold)
+
+:::
+
+## Distributions
+
+
+::: {style="font-size: 50%;"}
+
+1. gamma with shape $2$ and scale $1$;
+1. standard lognormal;
+1. Weibull with scale $1$ and shape $0.75$;
+1. Weibull with scale $1$ and shape $1.25$;
+1. piecewise generalized Pareto \citep{Northrop.Coleman:2014} with shape $0.25$ up to $u=1.25$ and $-0.25$ above
+1. standard exponential ($\xi=0$)
+1. generalized Pareto with shape $\xi=0.15$
+1. generalized Pareto with shape $\xi=-0.15$
+1. Student-$t$ with 6 degrees of freedom $(\xi=1/6$) truncated on $\mathbb{R}^{+}$;
+1. standard Fréchet with shape $\xi=0.5$;
+1. standard Cauchy ($\xi=1$)  truncated on $\mathbb{R}^{+}$;
+1. loggamma with density function $\log(x) x^{-2}$ for $x \geq 1$ ($\xi=1$);
+1. Burr with survival function $(1+x^{2})^{-1}$ for $x>0$ ($\xi=0.5$);
+1. piecewise generalized Pareto [@Northrop.Coleman:2014] with shape $-0.5$ up to the $0.9$ quantile and $0.25$ above;
+1. third extended generalized Pareto model of @Papastathopoulos.Tawn:2013 (power model) with $\xi=-0.2$, unit scale and $\kappa = 0.25$;
+1. exponential tilting extended generalized Pareto model  with shape $\xi =0.2$ and $\kappa=0.1$
+
+:::
+
+<!-- ## Parametric methods -->
+
+
+
+## References 

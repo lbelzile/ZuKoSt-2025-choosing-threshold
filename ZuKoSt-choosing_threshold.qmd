@@ -1565,22 +1565,28 @@ Are we barking up the wrong tree?
 - Weighting and model averaging to account for model uncertainty is promising, but validation criteria have huge impacts.
 
 
+## **R** package `mev`
+
+[Available from the CRAN](https://cran.r-project.org/web/packages/mev/index.html)
+
+
+::: {style="font-size: 60%;"}
+
+
+> An R package for the analysis of univariate, multivariate and functional extreme values. The package includes routine functions for univariate analyses multiple threshold selection diagnostics, optimization, bias-correction and tangent exponential model approximations, non-parametric spectral measure estimation using empirical likelihood methods, etc. Multivariate functionalities revolve around simulation algorithms for multivariate models, empirical likelihood, empirical dependence measures. Likelihood functions for elliptical processes and user-provided methodologies.
+
+:::
+
+18 threshold selection methods are implemented in `mev` (version 2.1). Many nonparametric methods in `tea`.
 
 ## Question period 
 
 
 :::{.center}
 
+Thank you for your attention and thanks to NSERC.
 
 
-
-Thank you for your attention.
-
-This presentation is based on joint work with Anthony Davison, with valuable insights from Sonia Alouini.
-
-18 methods are implemented in package `mev` (version 2.1).
-
-Thanks to NSERC for funding.
 ```{r}
 #| eval: true
 #| echo: false
@@ -1589,11 +1595,14 @@ Thanks to NSERC for funding.
 knitr::include_graphics("figures/NSERC.png")
 ```
 
+
+This presentation is based on joint work with Anthony Davison and Sonia Alouini.
+
 :::
 
 ::: {style="font-size: 90%;"}
 
-Slides at [`lbelzile.github.io/ZuKoSt-2025-choosing-threshold`](https://lbelzile.github.io/ZuKoSt-2025-choosing-threshold)
+Slides: [`lbelzile.github.io/ZuKoSt-2025-choosing-threshold`](https://lbelzile.github.io/ZuKoSt-2025-choosing-threshold)
 
 :::
 

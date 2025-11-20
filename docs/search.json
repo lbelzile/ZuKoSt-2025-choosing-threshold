@@ -378,11 +378,18 @@
     "text": "Conclusions\nAre we barking up the wrong tree?\n\nIs the problem well-formulated? there is no “correct” threshold.\nThreshold selection has often a tremendous impact on conclusion, so perhaps it would make more sense to fit sub-asymptotic models to much more data, while avoiding if possible contamination.\nWeighting and model averaging to account for model uncertainty is promising, but validation criteria have huge impacts."
   },
   {
+    "objectID": "ZuKoSt-choosing_threshold.html#r-package-mev",
+    "href": "ZuKoSt-choosing_threshold.html#r-package-mev",
+    "title": "Choosing the threshold in extreme value analysis",
+    "section": "R package mev",
+    "text": "R package mev\nAvailable from the CRAN\n\n\nAn R package for the analysis of univariate, multivariate and functional extreme values. The package includes routine functions for univariate analyses multiple threshold selection diagnostics, optimization, bias-correction and tangent exponential model approximations, non-parametric spectral measure estimation using empirical likelihood methods, etc. Multivariate functionalities revolve around simulation algorithms for multivariate models, empirical likelihood, empirical dependence measures. Likelihood functions for elliptical processes and user-provided methodologies.\n\n\n18 threshold selection methods are implemented in mev (version 2.1). Many nonparametric methods in tea."
+  },
+  {
     "objectID": "ZuKoSt-choosing_threshold.html#question-period",
     "href": "ZuKoSt-choosing_threshold.html#question-period",
     "title": "Choosing the threshold in extreme value analysis",
     "section": "Question period",
-    "text": "Question period\n\nThank you for your attention.\nThis presentation is based on joint work with Anthony Davison, with valuable insights from Sonia Alouini.\n18 methods are implemented in package mev (version 2.1).\nThanks to NSERC for funding.\n\n\n\n\n\n\n\n\n\n\n\nSlides at lbelzile.github.io/ZuKoSt-2025-choosing-threshold"
+    "text": "Question period\n\nThank you for your attention and thanks to NSERC.\n\n\n\n\n\n\n\n\n\nThis presentation is based on joint work with Anthony Davison and Sonia Alouini.\n\n\nSlides: lbelzile.github.io/ZuKoSt-2025-choosing-threshold"
   },
   {
     "objectID": "ZuKoSt-choosing_threshold.html#distributions",

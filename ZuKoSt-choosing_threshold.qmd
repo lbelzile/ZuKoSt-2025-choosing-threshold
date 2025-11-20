@@ -68,7 +68,12 @@ options(digits = 3, width = 75)
 Sys.setlocale("LC_TIME", "en_CA.utf8")
 ```
 
-## Motivation 
+
+# Motivation  {background-color="`{r} hecbleu`" .white}
+
+
+
+## Typical research question
 
 :::: {.columns}
 
@@ -240,7 +245,22 @@ There are three parameters:
 
 :::
 
-Most risk measures of interest are functionals of the parameters.
+
+## Fixed or random threshold?
+
+- **random**: $n_u$ is fixed and $u$ is an order statistic (sample value) $Y_{(n-n_u)}$.
+- **fixed**: if $u$ is a fixed quantity (20 mm of rain), then the probability of exceedance $\zeta_u = \Pr(Y > u)$ is random.
+ 
+
+Write $\mathcal{U} = u_1 \le \cdots \le u_K$ for the set of thresholds under consideration.
+
+:::{.notes}
+
+Uncertainty of $\zeta_u$ often ignored, but the latter is smaller. The binomial component is conditionally independent of the generalized Pareto part.
+
+The partial nesting induces dependence, but since samples have different numbers of exceedances, model comparison is difficult.
+:::
+
 
 
 ## Risk measures
@@ -250,6 +270,8 @@ Let $G(x; \sigma_u, \xi)$ denotes the generalized Pareto distribution function a
 If there are on average $n_y$ observations per year, then the $N$ year maximum distribution above $u$ is approximately $$G^{Nn_y\zeta_u}(x; \sigma_u, \xi).$$
 
 We can also consider the $N$ year return level, the quantile of an annual maximum exceeded with probability $1/N$ in any given year, $G^{-1}\{1-1/(\zeta_u n_y N)\}.$
+
+
 
 ## Expected value of 50-year maximum
 
@@ -559,29 +581,13 @@ The likelihood for the whole data includes a binomial component for $\zeta_u = \
 
 :::
 
-## Fixed or random thresholds?
-
-- **random**: $n_u$ is fixed and $u$ is an order statistic (sample value) $Y_{(n-n_u)}$.
-- **fixed**: if $u$ is a fixed quantity (20 mm of rain), then the probability of exceedance $\zeta_u = \Pr(Y > u)$ is random.
- 
-
-Write $\mathcal{U} = u_1, \le \cdots \le u_K$ for the set of thresholds under consideration.
-
-:::{.notes}
-
-Uncertainty of $\zeta_u$ often ignored, but the latter is smaller. The binomial component is conditionally independent of the generalized Pareto part.
-
-The partial nesting induces dependence, but since samples have different numbers of exceedances, model comparison is difficult.
-:::
-
-
 
 # Properties underlying threshold selection  {background-color="`{r} hecbleu`" .white}
 
 
 ## Threshold stability and extrapolation
 
-If $Y-u\sim \mathsf{GP}(\sigma_u,\xi)$, then for any $v>u$ such that $\sigma_v=\sigma_u+ \xi(v-u) > 0$, we have 
+If $X\sim \mathsf{GP}(\sigma,\xi),$ then for any $v>0$ such that $\sigma_v=\sigma+ \xi v > 0$, we have 
 \begin{align*}
 X-v \mid X>v \sim \mathsf{GP}(\sigma_v, \xi)
 \end{align*}
@@ -589,7 +595,7 @@ This property is termed **threshold stability**. The shape is in principle const
 
 The mean excess is also linear in $v$:
 \begin{align}
-e(v) = \mathrm{E}(X - v \mid X>v) = \frac{\sigma_u - \xi u}{1-\xi} + \frac{\xi}{1-\xi} v, \quad v\geq u.   \label{eq:mrl}
+e(v) = \mathrm{E}(X - v \mid X>v) = \frac{\sigma}{1-\xi} + \frac{\xi}{1-\xi} v, \quad v\geq 0.   \label{eq:mrl}
 \end{align}
 
 ## Consistency
@@ -602,24 +608,26 @@ For consistency, we need an intermediate sequence $n_u/n \to 0$, but $n_u, n \to
 
 Simple rules such as using a fixed proportion of the data by setting $n_u\approx np$ for some fixed $p$, do not satisfy this.
 
-## Second-order regular variation {.smaller}
+## Second-order regular variation
+
+::: {style="font-size: 80%;"}
 
 Suppose that its distribution function $F$ has two continuous derivatives and is continuous at its endpoint.
 
-Let 
+Define
 
+- $\xi$ denote the limiting shape parameter for the generalized Pareto approximation.
 - $u_t=F^{-1}(1-1/t)$ be the $1-1/t$ quantile of $F,$
-- $\sigma_t = r(u_t),$ where $r(t) = \{1-F(t)\}/f(t)$ the reciprocal hazard function,
+- $\sigma_t = r(u_t),$ where $r(t) = \{1-F(t)\}/f(t)$ is the reciprocal hazard function,
 - $\xi_t = r'(u_t)$ is the penultimate approximation to the shape.
+- $A(t) =\xi_t - \xi,$ assuming $u_t$ is twice differentiable and $u_t'$ is eventually positive.
 
-If $u_t$ is twice differentiable and $u_t'$ is eventually positive, then Theorem 2.1 of @deHaan/Resnick:1996 implies $A(t) =\xi_t - \xi,$ the difference between the penultimate and limiting values of the shape parameter.
-
+:::
 
 ## Asymptotic normality
 
-
-Under a second order regular variation assumption with $\lim_{n_u \to \infty} \sqrt{n_u}A(n/n_u) = \lambda\in \mathbb{R}$, subject to which \citep[Theorem 3.2.5]{deHaan.Ferreira:2006}
- \begin{align*}
+Under a second order regular variation assumption with $\lim_{n_u \to \infty} \sqrt{n_u}A(n/n_u) = \lambda\in \mathbb{R}$, subject to which [Theorem 3.2.5 of @deHaan.Ferreira:2006]
+\begin{align*}
 n_u^{1/2}(H_{n,n_u} - \xi) \to \mathsf{normal}\{\lambda/(1-\rho), \xi^2\}, \quad \rho \leq 0.
 \end{align*}
 
@@ -636,12 +644,12 @@ The asymptotic bias, which is unobtainable in finite samples, is dictated by the
 ## Minimizing mean squared error
 
 
-::: {style="font-size: 80%;"}
+::: {style="font-size: 90%;"}
 
 
-Many heavy-tailed distributions fall within the @Hall.Welsh:1985 class of distributions have $A(t) = \beta t^\rho$ for $\beta \neq 0$ and $\rho < 0.$
+Many heavy-tailed distributions fall within the @Hall.Welsh:1985 class have $A(t) = \beta t^\rho$ for $\beta \neq 0$ with $\rho < 0.$
 
-The asymptotic mean squared error $\xi^2/n_u + A^2(n/n_u)/(1-\rho)^2$ gives
+The asymptotic mean squared error of Hill's estimator is $$\mathsf{AMSE}(H_{n,n_u}) = \xi^2/n_u + A^2(n/n_u)/(1-\rho)^2,$$ which is minimized when
 \begin{align}
 n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\frac{1}{1-2\rho}}.
 \end{align}
@@ -756,14 +764,14 @@ Threshold-stability and the Markov nature of order statistics $X_{(1)}\leq\cdots
 
 Conditional model: only consider data above the threshold.
 
-Consider candidate thresholds $\mathcal{U}$, either fixed $u_1 < \cdots < u_K$ or random.
+<!-- Consider candidate thresholds $\mathcal{U}$, either fixed $u_1 < \cdots < u_K$ or random. -->
 
-Resulting problems:
+Problems:
  
-- Dependence between estimates, test statistics, $P$-values due to sample overlap.
-- Non-nested models, samples change with the threshold.
+- Sequential analysis: dependence between estimates, test statistics, $P$-values due to sample overlap.
+- Non-nested models (as the sample changes with the threshold).
 - Multiple testing problem.
-- Potential for automating the selection.
+
 
 :::
 
@@ -928,6 +936,14 @@ g02 + g03
 Difficulty to automate selection, pointwise confidence intervals, and the plots say nothing about goodness-of-fit!
 
 :::
+
+
+## Caveats of graphical diagnostics
+
+- Difficulty in automating selection (need visual inspection); proposals in @Langousis:2016 or @Danielsson:2019, but both fall short.
+- Problems: pointwise confidence intervals.
+- Underlying assumptions affected by penultimate effects.
+- The plots say nothing about goodness-of-fit!
 
 <!-- ## Penultimate effects - quantiles -->
 
@@ -1361,10 +1377,10 @@ These procedures either
 - fix them (e.g., setting $\rho=-1$), or
 - use bootstrap schemes to circumvent having to do so.  
 
-## Bootstrap methods based on @Hall:1990
-
+## Bootstrap methods
 
 ::: {style="font-size: 70%;"}
+Generalization of the method proposed in @Hall:1990
 
 - estimate the shape parameter using Hill's estimator with the $n_0$ largest order statistics;
 - perform a bootstrap loop ($B$ replications):  resample $m < n$ observations with replacement and compute Hill's estimator for the $n_m=1, \ldots, m$ largest order statistics. Denote the shifted estimates for the $b$th bootstrap replicate $d^{(b)}_{n_m}=(\widehat{H}^{(b)}_{m, n_m} - \widehat{H}_{n, n_0})^2$;
@@ -1378,7 +1394,13 @@ The method is sensitive to the choice of $n_0$ and $m=\mathrm{o}(n)$, which is l
 
 ## Semiparametric methods
 
-Other proposals [@Goegebeur.Beirlant.deWet:2008,@Bladt:2020,@Schneider:2021] relate the bias and MSE of Hill estimator with other estimators for $\xi>0$, and use these to minimize the mean squared error under the assumption $\rho=-1.$
+Other proposals include
+
+- @Goegebeur.Beirlant.deWet:2008, 
+- @Bladt:2020 and
+- @Schneider:2021
+
+They relate the bias and MSE of Hill estimator with other estimators for $\xi>0$, and use these to minimize the mean squared error under the assumption $\rho=-1.$
 
 
 ## Random block maxima
@@ -1526,10 +1548,9 @@ knitr::include_graphics("figures/Fig-orderstat_2K_semipar_none.png")
 ## Conclusions
 
 
-::: {style="font-size: 90%;"}
+::: {style="font-size: 85%;"}
 
 - There is no clear winner, but some methods are clearly suboptimal.
-- *Ad hoc* methods, e.g., @Thompson:2009, sometimes works well.
 - Estimation of second order parameters is difficult and typically far too noisy to be useful. More stable methods are obtained by fixing $\rho$ to a negative value, or bypassing its estimation completely, as in @Wager:2014.
 -  Many algorithms consider all potential choice of threshold, irrespective of the minimum number of exceedances needed for reliable estimation, or of the fact only the largest observations should be selected.
 
@@ -1539,7 +1560,7 @@ knitr::include_graphics("figures/Fig-orderstat_2K_semipar_none.png")
 
 Are we barking up the wrong tree?
 
-- Is the problem well-formulated? there is no ``correct'' threshold.
+- Is the problem well-formulated? there is no "correct" threshold.
 - Threshold selection has often a tremendous impact on conclusion, so perhaps it would make more sense to fit sub-asymptotic models to much more data, while avoiding if possible contamination. 
 - Weighting and model averaging to account for model uncertainty is promising, but validation criteria have huge impacts.
 
@@ -1548,37 +1569,35 @@ Are we barking up the wrong tree?
 ## Question period 
 
 
-:::: {.columns}
+:::{.center}
 
-::: {.column width="50%"}
+
 
 
 Thank you for your attention.
 
-:::
+This presentation is based on joint work with Anthony Davison, with valuable insights from Sonia Alouini.
 
-::: {.column width="45%"}
+18 methods are implemented in package `mev` (version 2.1).
 
-
-Thanks to NSERC for funding
+Thanks to NSERC for funding.
 ```{r}
 #| eval: true
 #| echo: false
 #| fig-align: 'center'
-#| out-width: '50%'
+#| out-width: '20%'
 knitr::include_graphics("figures/NSERC.png")
 ```
 
 :::
-
-::::
-
 
 ::: {style="font-size: 90%;"}
 
 Slides at [`lbelzile.github.io/ZuKoSt-2025-choosing-threshold`](https://lbelzile.github.io/ZuKoSt-2025-choosing-threshold)
 
 :::
+
+
 
 ## Distributions
 

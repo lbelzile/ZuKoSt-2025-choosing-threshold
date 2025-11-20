@@ -168,8 +168,13 @@ Léo Belzile, HEC Montréal
 
   <p class="date">Thursday, Nov 20, 2025</p>
 </section>
-<section id="motivation" class="slide level2">
-<h2>Motivation</h2>
+<section>
+<section id="motivation" class="title-slide slide level1 white center" data-background-color="#002855">
+<h1>Motivation</h1>
+
+</section>
+<section id="typical-research-question" class="slide level2">
+<h2>Typical research question</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
 <div style="font-size: 90%;">
@@ -245,7 +250,28 @@ Léo Belzile, HEC Montréal
 <li>the probability of exceedance <span class="math inline">\(\zeta_u = \Pr(Y &gt; u)\)</span>.</li>
 </ul>
 </div>
-<p>Most risk measures of interest are functionals of the parameters.</p>
+</section>
+<section id="fixed-or-random-threshold" class="slide level2">
+<h2>Fixed or random threshold?</h2>
+<ul>
+<li><strong>random</strong>: <span class="math inline">\(n_u\)</span> is fixed and <span class="math inline">\(u\)</span> is an order statistic (sample value) <span class="math inline">\(Y_{(n-n_u)}\)</span>.</li>
+<li><strong>fixed</strong>: if <span class="math inline">\(u\)</span> is a fixed quantity (20 mm of rain), then the probability of exceedance <span class="math inline">\(\zeta_u = \Pr(Y &gt; u)\)</span> is random.</li>
+</ul>
+<p>Write <span class="math inline">\(\mathcal{U} = u_1 \le \cdots \le u_K\)</span> for the set of thresholds under consideration.</p>
+<aside class="notes">
+<p>Uncertainty of <span class="math inline">\(\zeta_u\)</span> often ignored, but the latter is smaller. The binomial component is conditionally independent of the generalized Pareto part.</p>
+<p>The partial nesting induces dependence, but since samples have different numbers of exceedances, model comparison is difficult.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="risk-measures" class="slide level2">
 <h2>Risk measures</h2>
@@ -267,7 +293,7 @@ Figure&nbsp;1: Bayesian and frequentist inference based on a threshold of <span 
 <li>we fit the limiting generalized Pareto distribution with scale <span class="math inline">\(\sigma_u\)</span> and shape <span class="math inline">\(\xi\)</span> to exceedances <span class="math inline">\(Y-u\)</span> above the threshold <span class="math inline">\(u\)</span>.</li>
 <li>we use the resulting model for extrapolation beyond <span class="math inline">\(u\)</span>.</li>
 </ol>
-</section>
+</section></section>
 <section>
 <section id="how-to-choose-the-threshold" class="title-slide slide level1 white center" data-background-color="#002855">
 <h1>How to choose the threshold?</h1>
@@ -361,28 +387,6 @@ Figure&nbsp;2: Estimates of shape (left) and 100-year return level (right) as a 
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="fixed-or-random-thresholds" class="slide level2">
-<h2>Fixed or random thresholds?</h2>
-<ul>
-<li><strong>random</strong>: <span class="math inline">\(n_u\)</span> is fixed and <span class="math inline">\(u\)</span> is an order statistic (sample value) <span class="math inline">\(Y_{(n-n_u)}\)</span>.</li>
-<li><strong>fixed</strong>: if <span class="math inline">\(u\)</span> is a fixed quantity (20 mm of rain), then the probability of exceedance <span class="math inline">\(\zeta_u = \Pr(Y &gt; u)\)</span> is random.</li>
-</ul>
-<p>Write <span class="math inline">\(\mathcal{U} = u_1, \le \cdots \le u_K\)</span> for the set of thresholds under consideration.</p>
-<aside class="notes">
-<p>Uncertainty of <span class="math inline">\(\zeta_u\)</span> often ignored, but the latter is smaller. The binomial component is conditionally independent of the generalized Pareto part.</p>
-<p>The partial nesting induces dependence, but since samples have different numbers of exceedances, model comparison is difficult.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
 </section></section>
 <section>
 <section id="properties-underlying-threshold-selection" class="title-slide slide level1 white center" data-background-color="#002855">
@@ -391,11 +395,11 @@ Figure&nbsp;2: Estimates of shape (left) and 100-year return level (right) as a 
 </section>
 <section id="threshold-stability-and-extrapolation" class="slide level2">
 <h2>Threshold stability and extrapolation</h2>
-<p>If <span class="math inline">\(Y-u\sim \mathsf{GP}(\sigma_u,\xi)\)</span>, then for any <span class="math inline">\(v&gt;u\)</span> such that <span class="math inline">\(\sigma_v=\sigma_u+ \xi(v-u) &gt; 0\)</span>, we have <span class="math display">\[\begin{align*}
+<p>If <span class="math inline">\(X\sim \mathsf{GP}(\sigma,\xi),\)</span> then for any <span class="math inline">\(v&gt;0\)</span> such that <span class="math inline">\(\sigma_v=\sigma+ \xi v &gt; 0\)</span>, we have <span class="math display">\[\begin{align*}
 X-v \mid X&gt;v \sim \mathsf{GP}(\sigma_v, \xi)
 \end{align*}\]</span> This property is termed <strong>threshold stability</strong>. The shape is in principle constant.</p>
 <p>The mean excess is also linear in <span class="math inline">\(v\)</span>: <span class="math display">\[\begin{align}
-e(v) = \mathrm{E}(X - v \mid X&gt;v) = \frac{\sigma_u - \xi u}{1-\xi} + \frac{\xi}{1-\xi} v, \quad v\geq u.   \label{eq:mrl}
+e(v) = \mathrm{E}(X - v \mid X&gt;v) = \frac{\sigma}{1-\xi} + \frac{\xi}{1-\xi} v, \quad v\geq 0.   \label{eq:mrl}
 \end{align}\]</span></p>
 </section>
 <section id="consistency" class="slide level2">
@@ -404,20 +408,23 @@ e(v) = \mathrm{E}(X - v \mid X&gt;v) = \frac{\sigma_u - \xi u}{1-\xi} + \frac{\x
 <p>For consistency, we need an intermediate sequence <span class="math inline">\(n_u/n \to 0\)</span>, but <span class="math inline">\(n_u, n \to \infty\)</span>, e.g., <span class="math inline">\(n_u = \lceil n- n^q\rceil\)</span> for <span class="math inline">\(q \in (0,1)\)</span>, with <span class="math inline">\(q=0.995\)</span> or <span class="math inline">\(q=0.999.\)</span></p>
 <p>Simple rules such as using a fixed proportion of the data by setting <span class="math inline">\(n_u\approx np\)</span> for some fixed <span class="math inline">\(p\)</span>, do not satisfy this.</p>
 </section>
-<section id="second-order-regular-variation" class="slide level2 smaller">
+<section id="second-order-regular-variation" class="slide level2">
 <h2>Second-order regular variation</h2>
+<div style="font-size: 80%;">
 <p>Suppose that its distribution function <span class="math inline">\(F\)</span> has two continuous derivatives and is continuous at its endpoint.</p>
-<p>Let</p>
+<p>Define</p>
 <ul>
+<li><span class="math inline">\(\xi\)</span> denote the limiting shape parameter for the generalized Pareto approximation.</li>
 <li><span class="math inline">\(u_t=F^{-1}(1-1/t)\)</span> be the <span class="math inline">\(1-1/t\)</span> quantile of <span class="math inline">\(F,\)</span></li>
-<li><span class="math inline">\(\sigma_t = r(u_t),\)</span> where <span class="math inline">\(r(t) = \{1-F(t)\}/f(t)\)</span> the reciprocal hazard function,</li>
+<li><span class="math inline">\(\sigma_t = r(u_t),\)</span> where <span class="math inline">\(r(t) = \{1-F(t)\}/f(t)\)</span> is the reciprocal hazard function,</li>
 <li><span class="math inline">\(\xi_t = r'(u_t)\)</span> is the penultimate approximation to the shape.</li>
+<li><span class="math inline">\(A(t) =\xi_t - \xi,\)</span> assuming <span class="math inline">\(u_t\)</span> is twice differentiable and <span class="math inline">\(u_t'\)</span> is eventually positive.</li>
 </ul>
-<p>If <span class="math inline">\(u_t\)</span> is twice differentiable and <span class="math inline">\(u_t'\)</span> is eventually positive, then Theorem 2.1 of <span class="citation" data-cites="deHaan/Resnick:1996">Haan and Resnick (<a href="#/references" role="doc-biblioref" onclick="">1996</a>)</span> implies <span class="math inline">\(A(t) =\xi_t - \xi,\)</span> the difference between the penultimate and limiting values of the shape parameter.</p>
+</div>
 </section>
 <section id="asymptotic-normality" class="slide level2">
 <h2>Asymptotic normality</h2>
-<p>Under a second order regular variation assumption with <span class="math inline">\(\lim_{n_u \to \infty} \sqrt{n_u}A(n/n_u) = \lambda\in \mathbb{R}\)</span>, subject to which <span class="math display">\[\begin{align*}
+<p>Under a second order regular variation assumption with <span class="math inline">\(\lim_{n_u \to \infty} \sqrt{n_u}A(n/n_u) = \lambda\in \mathbb{R}\)</span>, subject to which <span class="citation" data-cites="deHaan.Ferreira:2006">(Theorem 3.2.5 of <a href="#/references" role="doc-biblioref" onclick="">de Haan and Ferreira 2006</a>)</span> <span class="math display">\[\begin{align*}
 n_u^{1/2}(H_{n,n_u} - \xi) \to \mathsf{normal}\{\lambda/(1-\rho), \xi^2\}, \quad \rho \leq 0.
 \end{align*}\]</span></p>
 <p>Similar results hold for maximum likelihood estimators.</p>
@@ -437,9 +444,9 @@ n_u^{1/2}(H_{n,n_u} - \xi) \to \mathsf{normal}\{\lambda/(1-\rho), \xi^2\}, \quad
 </section>
 <section id="minimizing-mean-squared-error" class="slide level2">
 <h2>Minimizing mean squared error</h2>
-<div style="font-size: 80%;">
-<p>Many heavy-tailed distributions fall within the <span class="citation" data-cites="Hall.Welsh:1985">Hall and Welsh (<a href="#/references" role="doc-biblioref" onclick="">1985</a>)</span> class of distributions have <span class="math inline">\(A(t) = \beta t^\rho\)</span> for <span class="math inline">\(\beta \neq 0\)</span> and <span class="math inline">\(\rho &lt; 0.\)</span></p>
-<p>The asymptotic mean squared error <span class="math inline">\(\xi^2/n_u + A^2(n/n_u)/(1-\rho)^2\)</span> gives <span class="math display">\[\begin{align}
+<div style="font-size: 90%;">
+<p>Many heavy-tailed distributions fall within the <span class="citation" data-cites="Hall.Welsh:1985">Hall and Welsh (<a href="#/references" role="doc-biblioref" onclick="">1985</a>)</span> class have <span class="math inline">\(A(t) = \beta t^\rho\)</span> for <span class="math inline">\(\beta \neq 0\)</span> with <span class="math inline">\(\rho &lt; 0.\)</span></p>
+<p>The asymptotic mean squared error of Hill’s estimator is <span class="math display">\[\mathsf{AMSE}(H_{n,n_u}) = \xi^2/n_u + A^2(n/n_u)/(1-\rho)^2,\]</span> which is minimized when <span class="math display">\[\begin{align}
 n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\frac{1}{1-2\rho}}.
 \end{align}\]</span></p>
 </div>
@@ -505,13 +512,12 @@ n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\f
 <h2>Common challenges</h2>
 <div style="font-size: 80%;">
 <p>Conditional model: only consider data above the threshold.</p>
-<p>Consider candidate thresholds <span class="math inline">\(\mathcal{U}\)</span>, either fixed <span class="math inline">\(u_1 &lt; \cdots &lt; u_K\)</span> or random.</p>
-<p>Resulting problems:</p>
+<!-- Consider candidate thresholds $\mathcal{U}$, either fixed $u_1 < \cdots < u_K$ or random. -->
+<p>Problems:</p>
 <ul>
-<li>Dependence between estimates, test statistics, <span class="math inline">\(P\)</span>-values due to sample overlap.</li>
-<li>Non-nested models, samples change with the threshold.</li>
+<li>Sequential analysis: dependence between estimates, test statistics, <span class="math inline">\(P\)</span>-values due to sample overlap.</li>
+<li>Non-nested models (as the sample changes with the threshold).</li>
 <li>Multiple testing problem.</li>
-<li>Potential for automating the selection.</li>
 </ul>
 </div>
 </section>
@@ -552,6 +558,15 @@ n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\f
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="caveats-of-graphical-diagnostics" class="slide level2">
+<h2>Caveats of graphical diagnostics</h2>
+<ul>
+<li>Difficulty in automating selection (need visual inspection); proposals in <span class="citation" data-cites="Langousis:2016">Langousis et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> or <span class="citation" data-cites="Danielsson:2019">Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>, but both fall short.</li>
+<li>Problems: pointwise confidence intervals.</li>
+<li>Underlying assumptions affected by penultimate effects.</li>
+<li>The plots say nothing about goodness-of-fit!</li>
+</ul>
 <!-- ## Penultimate effects - quantiles -->
 <!-- ```{r} -->
 <!-- #| eval: true -->
@@ -568,11 +583,11 @@ n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\f
 <h2>Extended generalized Pareto models</h2>
 <div style="font-size: 80%;">
 <p>Embed generalized Pareto <span class="math inline">\(F(x;\sigma,\xi)\)</span> in a more flexible model using a continuous distribution function <span class="math inline">\(G_\kappa\)</span> on <span class="math inline">\([0,1]\)</span>. The EGP<span class="math inline">\((\sigma,\xi, G_\kappa)\)</span> distribution function is then <span class="math display">\[\begin{align*}
-\Pr(X\leq x) = G_\kappa\{ F(x;\sigma,\xi)\}.                     \end{align*}\]</span> Choose <span class="math inline">\(G\)</span> to keep the tail properties. See the chapter of <span class="citation" data-cites="Naveau:2025">P. Naveau (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span> for a recent review.</p>
+\Pr(X\leq x) = G_\kappa\{ F(x;\sigma,\xi)\}.                     \end{align*}\]</span> Choose <span class="math inline">\(G\)</span> to keep the tail properties. See the chapter of <span class="citation" data-cites="Naveau:2025">Naveau (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span> for a recent review.</p>
 <ul>
 <li><span class="citation" data-cites="Papastathopoulos.Tawn:2013">Papastathopoulos and Tawn (<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span>: models imply the density at the origin is zero.</li>
 <li><span class="citation" data-cites="Gamet.Jalbert:2022">Gamet and Jalbert (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span> propose two models, but one leads to non-regular asymptotics (restriction on boundary of the parameter space).</li>
-<li><span class="citation" data-cites="Naveau:2016">Philippe Naveau et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> additional models with two parameters.</li>
+<li><span class="citation" data-cites="Naveau:2016">Naveau et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> additional models with two parameters.</li>
 </ul>
 </div>
 </section>
@@ -704,9 +719,10 @@ F(x; \boldsymbol{\theta}) =
 <li>use bootstrap schemes to circumvent having to do so.</li>
 </ul>
 </section>
-<section id="bootstrap-methods-based-on-hall1990" class="slide level2">
-<h2>Bootstrap methods based on <span class="citation" data-cites="Hall:1990">Hall (<a href="#/references" role="doc-biblioref" onclick="">1990</a>)</span></h2>
+<section id="bootstrap-methods" class="slide level2">
+<h2>Bootstrap methods</h2>
 <div style="font-size: 70%;">
+<p>Generalization of the method proposed in <span class="citation" data-cites="Hall:1990">Hall (<a href="#/references" role="doc-biblioref" onclick="">1990</a>)</span></p>
 <ul>
 <li>estimate the shape parameter using Hill’s estimator with the <span class="math inline">\(n_0\)</span> largest order statistics;</li>
 <li>perform a bootstrap loop (<span class="math inline">\(B\)</span> replications): resample <span class="math inline">\(m &lt; n\)</span> observations with replacement and compute Hill’s estimator for the <span class="math inline">\(n_m=1, \ldots, m\)</span> largest order statistics. Denote the shifted estimates for the <span class="math inline">\(b\)</span>th bootstrap replicate <span class="math inline">\(d^{(b)}_{n_m}=(\widehat{H}^{(b)}_{m, n_m} - \widehat{H}_{n, n_0})^2\)</span>;</li>
@@ -718,7 +734,13 @@ F(x; \boldsymbol{\theta}) =
 </section>
 <section id="semiparametric-methods-1" class="slide level2">
 <h2>Semiparametric methods</h2>
-<p>Other proposals <span class="citation" data-cites="Goegebeur.Beirlant.deWet:2008">Schneider, Krajina, and Krivobokova (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span> relate the bias and MSE of Hill estimator with other estimators for <span class="math inline">\(\xi&gt;0\)</span>, and use these to minimize the mean squared error under the assumption <span class="math inline">\(\rho=-1.\)</span></p>
+<p>Other proposals include</p>
+<ul>
+<li><span class="citation" data-cites="Goegebeur.Beirlant.deWet:2008">Goegebeur, Beirlant, and Wet (<a href="#/references" role="doc-biblioref" onclick="">2008</a>)</span>,</li>
+<li><span class="citation" data-cites="Bladt:2020">Bladt, Albrecher, and Beirlant (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> and</li>
+<li><span class="citation" data-cites="Schneider:2021">Schneider, Krajina, and Krivobokova (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span></li>
+</ul>
+<p>They relate the bias and MSE of Hill estimator with other estimators for <span class="math inline">\(\xi&gt;0\)</span>, and use these to minimize the mean squared error under the assumption <span class="math inline">\(\rho=-1.\)</span></p>
 </section>
 <section id="random-block-maxima" class="slide level2">
 <h2>Random block maxima</h2>
@@ -828,10 +850,9 @@ F(x; \boldsymbol{\theta}) =
 </section>
 <section id="conclusions" class="slide level2">
 <h2>Conclusions</h2>
-<div style="font-size: 90%;">
+<div style="font-size: 85%;">
 <ul>
 <li>There is no clear winner, but some methods are clearly suboptimal.</li>
-<li><em>Ad hoc</em> methods, e.g., <span class="citation" data-cites="Thompson:2009">Thompson et al. (<a href="#/references" role="doc-biblioref" onclick="">2009</a>)</span>, sometimes works well.</li>
 <li>Estimation of second order parameters is difficult and typically far too noisy to be useful. More stable methods are obtained by fixing <span class="math inline">\(\rho\)</span> to a negative value, or bypassing its estimation completely, as in <span class="citation" data-cites="Wager:2014">Wager (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span>.</li>
 <li>Many algorithms consider all potential choice of threshold, irrespective of the minimum number of exceedances needed for reliable estimation, or of the fact only the largest observations should be selected.</li>
 </ul>
@@ -841,28 +862,28 @@ F(x; \boldsymbol{\theta}) =
 <h2>Conclusions</h2>
 <p>Are we barking up the wrong tree?</p>
 <ul>
-<li>Is the problem well-formulated? there is no ``correct’’ threshold.</li>
+<li>Is the problem well-formulated? there is no “correct” threshold.</li>
 <li>Threshold selection has often a tremendous impact on conclusion, so perhaps it would make more sense to fit sub-asymptotic models to much more data, while avoiding if possible contamination.</li>
 <li>Weighting and model averaging to account for model uncertainty is promising, but validation criteria have huge impacts.</li>
 </ul>
 </section>
 <section id="question-period" class="slide level2">
 <h2>Question period</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
+<div class="center">
 <p>Thank you for your attention.</p>
-</div><div class="column" style="width:45%;">
-<p>Thanks to NSERC for funding</p>
+<p>This presentation is based on joint work with Anthony Davison, with valuable insights from Sonia Alouini.</p>
+<p>18 methods are implemented in package <code>mev</code> (version 2.1).</p>
+<p>Thanks to NSERC for funding.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="figures/NSERC.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
+<p><img data-src="figures/NSERC.png" class="quarto-figure quarto-figure-center" style="width:20.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-</div></div>
+</div>
 <div style="font-size: 90%;">
 <p>Slides at <a href="https://lbelzile.github.io/ZuKoSt-2025-choosing-threshold"><code>lbelzile.github.io/ZuKoSt-2025-choosing-threshold</code></a></p>
 </div>
@@ -926,6 +947,9 @@ Danielsson, Jon, Lerby Ergun, Casper G. de Vries, and Laurens de Haan. 2019. <sp
 <div id="ref-Davison.Smith:1990" class="csl-entry" role="listitem">
 Davison, Anthony C., and Richard L. Smith. 1990. <span>“Models for Exceedances over High Thresholds (with Discussion).”</span> <em>Journal of the Royal Statistical Society. Series B. (Methodological)</em> 52 (3): 393–442. <a href="https://doi.org/10.1111/j.2517-6161.1990.tb01796.x">https://doi.org/10.1111/j.2517-6161.1990.tb01796.x</a>.
 </div>
+<div id="ref-deHaan.Ferreira:2006" class="csl-entry" role="listitem">
+de Haan, L., and A. Ferreira. 2006. <em>Extreme Value Theory: An Introduction</em>. New York: Springer. <a href="https://doi.org/10.1007/0-387-34471-3">https://doi.org/10.1007/0-387-34471-3</a>.
+</div>
 <div id="ref-Drees.Kaufmann:1998" class="csl-entry" role="listitem">
 Drees, Holger, and Edgar Kaufmann. 1998. <span>“Selecting the Optimal Sample Fraction in Univariate Extreme Value Estimation.”</span> <em>Stochastic Processes and Their Applications</em> 75 (2): 149–72. <a href="https://doi.org/10.1016/s0304-4149(98)00017-9">https://doi.org/10.1016/s0304-4149(98)00017-9</a>.
 </div>
@@ -949,9 +973,6 @@ Grimshaw, Scott D. 1993. <span>“Computing Maximum Likelihood Estimates for the
 </div>
 <div id="ref-Guillou.Hall:2001" class="csl-entry" role="listitem">
 Guillou, Armelle, and Peter Hall. 2001. <span>“A Diagnostic for Selecting the Threshold in Extreme Value Analysis.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 63 (2): 293–305. <a href="https://doi.org/10.1111/1467-9868.00286">https://doi.org/10.1111/1467-9868.00286</a>.
-</div>
-<div id="ref-deHaan/Resnick:1996" class="csl-entry" role="listitem">
-Haan, Laurens de, and Sidney Resnick. 1996. <span>“Second-Order Regular Variation and Rates of Convergence in Extreme-Value Theory.”</span> <em>The Annals of Probability</em> 24 (1): 97–124. <a href="https://doi.org/10.1214/aop/1042644709">https://doi.org/10.1214/aop/1042644709</a>.
 </div>
 <div id="ref-Hall:1990" class="csl-entry" role="listitem">
 Hall, Peter. 1990. <span>“Using the Bootstrap to Estimate Mean Squared Error and Select Smoothing Parameter in Nonparametric Problems.”</span> <em>Journal of Multivariate Analysis</em> 32 (2): 177–203. <a href="https://doi.org/10.1016/0047-259x(90)90080-2">https://doi.org/10.1016/0047-259x(90)90080-2</a>.
@@ -981,7 +1002,7 @@ Murphy, Conor, Jonathan A. Tawn, and Zak Varty. 2025. <span>“Automated Thresho
 Nascimento, Fernando Ferraz do, Dani Gamerman, and Hedibert Freitas Lopes. 2012. <span>“A Semiparametric <span>B</span>ayesian Approach to Extreme Value Estimation.”</span> <em>Statistics and Computing</em> 22 (2): 661–75. <a href="https://doi.org/10.1007/s11222-011-9270-z">https://doi.org/10.1007/s11222-011-9270-z</a>.
 </div>
 <div id="ref-Naveau:2025" class="csl-entry" role="listitem">
-Naveau, P. 2025. <span>“Jointly Modeling Bulk and Tails.”</span> In <em>Handbook of Statistics of Extremes</em>, edited by M. de Carvalho, R. Huser, P. Naveau, and B. J. and Reich, to appear. Boca Raton: Chapman &amp; Hall/CRC.
+Naveau, Philippe. 2025. <span>“Jointly Modeling Bulk and Tails.”</span> In <em>Handbook of Statistics of Extremes</em>, edited by M. de Carvalho, R. Huser, P. Naveau, and B. J. and Reich, to appear. Boca Raton: Chapman &amp; Hall/CRC.
 </div>
 <div id="ref-Naveau:2016" class="csl-entry" role="listitem">
 Naveau, Philippe, Raphael Huser, Pierre Ribereau, and Alexis Hannart. 2016. <span>“Modeling Jointly Low, Moderate, and Heavy Rainfall Intensities Without a Threshold Selection.”</span> <em>Water Resources Research</em> 52 (4): 2753–69. https://doi.org/<a href="https://doi.org/10.1002/2015WR018552">https://doi.org/10.1002/2015WR018552</a>.

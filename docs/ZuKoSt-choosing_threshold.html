@@ -404,7 +404,7 @@ e(v) = \mathrm{E}(X - v \mid X&gt;v) = \frac{\sigma}{1-\xi} + \frac{\xi}{1-\xi} 
 </section>
 <section id="consistency" class="slide level2">
 <h2>Consistency</h2>
-<p>We work under ‘’domain of attraction’’ condition, meaning that usual asymptotics are only valid if the threshold increases with the sample size.</p>
+<p>We work under “domain of attraction” conditions, meaning that usual asymptotics are only valid if the threshold increases with the sample size.</p>
 <p>For consistency, we need an intermediate sequence <span class="math inline">\(n_u/n \to 0\)</span>, but <span class="math inline">\(n_u, n \to \infty\)</span>, e.g., <span class="math inline">\(n_u = \lceil n- n^q\rceil\)</span> for <span class="math inline">\(q \in (0,1)\)</span>, with <span class="math inline">\(q=0.995\)</span> or <span class="math inline">\(q=0.999.\)</span></p>
 <p>Simple rules such as using a fixed proportion of the data by setting <span class="math inline">\(n_u\approx np\)</span> for some fixed <span class="math inline">\(p\)</span>, do not satisfy this.</p>
 </section>
@@ -445,8 +445,8 @@ n_u^{1/2}(H_{n,n_u} - \xi) \to \mathsf{normal}\{\lambda/(1-\rho), \xi^2\}, \quad
 <section id="minimizing-mean-squared-error" class="slide level2">
 <h2>Minimizing mean squared error</h2>
 <div style="font-size: 90%;">
-<p>Many heavy-tailed distributions fall within the <span class="citation" data-cites="Hall.Welsh:1985">Hall and Welsh (<a href="#/references" role="doc-biblioref" onclick="">1985</a>)</span> class have <span class="math inline">\(A(t) = \beta t^\rho\)</span> for <span class="math inline">\(\beta \neq 0\)</span> with <span class="math inline">\(\rho &lt; 0.\)</span></p>
-<p>The asymptotic mean squared error of Hill’s estimator is <span class="math display">\[\mathsf{AMSE}(H_{n,n_u}) = \xi^2/n_u + A^2(n/n_u)/(1-\rho)^2,\]</span> which is minimized when <span class="math display">\[\begin{align}
+<p>The asymptotic mean squared error of Hill’s estimator is <span class="math display">\[\mathsf{AMSE}(H_{n,n_u}) = \xi^2/n_u + A^2(n/n_u)/(1-\rho)^2.\]</span></p>
+<p>Many heavy-tailed distributions fall within the <span class="citation" data-cites="Hall.Welsh:1985">Hall and Welsh (<a href="#/references" role="doc-biblioref" onclick="">1985</a>)</span> class, for which <span class="math inline">\(A(t) = \beta t^\rho\)</span> for <span class="math inline">\(\beta \neq 0\)</span> with <span class="math inline">\(\rho &lt; 0.\)</span> For these distributions, <span class="math inline">\(\mathsf{AMSE}(H_{n,n_u})\)</span> is minimized when <span class="math display">\[\begin{align}
 n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\frac{1}{1-2\rho}}.
 \end{align}\]</span></p>
 </div>
@@ -523,25 +523,12 @@ n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\f
 </section>
 <section id="mean-residual-life-plot" class="slide level2">
 <h2>Mean residual life plot</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <div style="font-size: 80%;">
 <p>Mean residual plot <span class="citation" data-cites="Davison.Smith:1990">(<a href="#/references" role="doc-biblioref" onclick="">Davison and Smith 1990</a>)</span>, which graphs the empirical mean excesses <span class="math inline">\(e(u)\)</span> against thresholds <span class="math inline">\(u \in \mathcal{U}.\)</span></p>
-<p>Common practice is to find a region above which the slope looks <strong>linear</strong>.</p>
-<p>Automation proposed by <span class="citation" data-cites="Langousis:2016">Langousis et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> based on weighted regression.</p>
+<p>Find a region above which the slope looks <strong>linear</strong>.</p>
 </div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-7-1.png" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
+
+<img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="threshold-stability-plots" class="slide level2">
 <h2>Threshold stability plots</h2>
 
@@ -562,7 +549,7 @@ n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\f
 <section id="caveats-of-graphical-diagnostics" class="slide level2">
 <h2>Caveats of graphical diagnostics</h2>
 <ul>
-<li>Difficulty in automating selection (need visual inspection); proposals in <span class="citation" data-cites="Langousis:2016">Langousis et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> or <span class="citation" data-cites="Danielsson:2019">Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>, but both fall short.</li>
+<li>Difficulty in automating selection (need visual inspection); proposals in <span class="citation" data-cites="Langousis:2016">Langousis et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> or <span class="citation" data-cites="Danielsson:2019">Jon Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>, but both fall short.</li>
 <li>Problems: pointwise confidence intervals.</li>
 <li>Underlying assumptions affected by penultimate effects.</li>
 <li>The plots say nothing about goodness-of-fit!</li>
@@ -585,12 +572,16 @@ n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\f
 <p>Embed generalized Pareto <span class="math inline">\(F(x;\sigma,\xi)\)</span> in a more flexible model using a continuous distribution function <span class="math inline">\(G_\kappa\)</span> on <span class="math inline">\([0,1]\)</span>. The EGP<span class="math inline">\((\sigma,\xi, G_\kappa)\)</span> distribution function is then <span class="math display">\[\begin{align*}
 \Pr(X\leq x) = G_\kappa\{ F(x;\sigma,\xi)\}.                     \end{align*}\]</span> Choose <span class="math inline">\(G\)</span> to keep the tail properties. See the chapter of <span class="citation" data-cites="Naveau:2025">Naveau (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span> for a recent review.</p>
 <ul>
-<li><span class="citation" data-cites="Papastathopoulos.Tawn:2013">Papastathopoulos and Tawn (<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span>: models imply the density at the origin is zero.</li>
+<li><span class="citation" data-cites="Papastathopoulos.Tawn:2013">Papastathopoulos and Tawn (<a href="#/references" role="doc-biblioref" onclick="">2013</a>)</span> models imply the density at the origin is zero.</li>
 <li><span class="citation" data-cites="Gamet.Jalbert:2022">Gamet and Jalbert (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span> propose two models, but one leads to non-regular asymptotics (restriction on boundary of the parameter space).</li>
-<li><span class="citation" data-cites="Naveau:2016">Naveau et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> additional models with two parameters.</li>
+<li><span class="citation" data-cites="Naveau:2016">Naveau et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> suggest additional models with two parameters.</li>
 </ul>
 </div>
 </section>
+<section id="extended-generalized-pareto" class="slide level2">
+<h2>Extended generalized Pareto</h2>
+
+<img data-src="figures/Comparison_return_level-EGPvsGP.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
 <section id="piecewise-generalized-pareto-model" class="slide level2">
 <h2>Piecewise generalized Pareto model</h2>
 <p><span class="citation" data-cites="Northrop.Coleman:2014">Northrop and Coleman (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span> specify a truncated generalized Pareto distribution with shape <span class="math inline">\(\xi_i\)</span> in interval <span class="math inline">\([u_{i}, u_{i+1})\)</span>, and continuity constraints for the scale parameters.</p>
@@ -630,7 +621,7 @@ Figure&nbsp;3: <span class="citation" data-cites="Northrop.Coleman:2014">Northro
 <div style="font-size: 80%;">
 <p>Glue a distribution for the bulk with one for the tail using a mixture of disjoint components below <span class="math inline">\(u\)</span> (bulk) and above <span class="math inline">\(u\)</span> (generalized Pareto).</p>
 <p>See <span class="citation" data-cites="Scarrott.MacDonald:2012">Scarrott and MacDonald (<a href="#/references" role="doc-biblioref" onclick="">2012</a>)</span> and <span class="citation" data-cites="Hu.Scarrott:2018">Hu and Scarrott (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span> for reviews.</p>
-<p>A ‘’parametrized tail fraction’’ model uses a mixture of truncated distribution <span class="math inline">\(H\)</span> below and generalized Pareto above <span class="math inline">\(u\)</span>, with mixing probability <span class="math inline">\(\zeta_u\)</span>, <span class="math display">\[\begin{align*}
+<p>A “parametrized tail fraction” model uses a mixture of truncated distribution <span class="math inline">\(H\)</span> below and generalized Pareto above <span class="math inline">\(u\)</span>, with mixing probability <span class="math inline">\(\zeta_u\)</span>, <span class="math display">\[\begin{align*}
 F(x; \boldsymbol{\theta}) =
 \begin{cases}
 (1-\zeta_u){H(x; \boldsymbol{\theta})}/{H(u; \boldsymbol{\theta})} ,&amp; x \leq u, \\
@@ -642,14 +633,14 @@ F(x; \boldsymbol{\theta}) =
 <section id="splicing-models-for-padova-data" class="slide level2">
 <h2>Splicing models for Padova data</h2>
 
-<img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"></section>
+<img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
 <section id="drawback-and-advantages-of-splicing-models" class="slide level2">
 <h2>Drawback and advantages of splicing models</h2>
 <p>Model all of the data, but need flexible models for bulk (kernel density mixtures). The choice of <span class="math inline">\(u\)</span> still critical.</p>
 <ul>
 <li>If <span class="math inline">\(u\)</span> is a parameter, the profile likelihood for threshold <span class="math inline">\(u\)</span> needs not be monotone.</li>
 <li>Fit of the tail may be driven by bulk (sample contamination)</li>
-<li>Sharp discontinuity at <span class="math inline">\(u\)</span>, continuity constraints or random threshold <span class="citation" data-cites="doNascimento.Gamerman.Lopes:2012">(<a href="#/references" role="doc-biblioref" onclick="">Nascimento, Gamerman, and Lopes 2012</a>)</span> alleviate this somewhat.</li>
+<li>Sharp discontinuity at <span class="math inline">\(u\)</span>; continuity constraints or random threshold <span class="citation" data-cites="doNascimento.Gamerman.Lopes:2012">(<a href="#/references" role="doc-biblioref" onclick="">Nascimento, Gamerman, and Lopes 2012</a>)</span> alleviate this somewhat.</li>
 </ul>
 </section>
 <section id="goodness-of-fit-measures" class="slide level2">
@@ -694,7 +685,7 @@ F(x; \boldsymbol{\theta}) =
 <section id="metric-based-adjustment-1" class="slide level2">
 <h2>Metric-based adjustment</h2>
 
-<img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
+<img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"></section>
 <section id="bayesian-predictive-distribution" class="slide level2">
 <h2>Bayesian predictive distribution</h2>
 <div style="font-size: 85%;">
@@ -742,25 +733,13 @@ F(x; \boldsymbol{\theta}) =
 </ul>
 <p>They relate the bias and MSE of Hill estimator with other estimators for <span class="math inline">\(\xi&gt;0\)</span>, and use these to minimize the mean squared error under the assumption <span class="math inline">\(\rho=-1.\)</span></p>
 </section>
-<section id="random-block-maxima" class="slide level2">
-<h2>Random block maxima</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-12-1.png" style="width:100.0%"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div style="font-size: 90%;">
+<section id="extremal-u-estimators" class="slide level2">
+<h2>Extremal <span class="math inline">\(U\)</span>-estimators</h2>
+
+<img data-src="ZuKoSt-choosing_threshold_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"><div style="font-size: 90%;">
 <p><span class="citation" data-cites="Wager:2014">Wager (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span> propose an alternative estimator (random block maxima) based on <span class="math inline">\(U\)</span>-statistics, whose sample paths are <span class="math inline">\(\mathcal{C}^{\infty}\)</span> as a function of <span class="math inline">\(n_u.\)</span></p>
 <p>Approximating the bias using the derivative of the sample path (which is its expected value up to scaling) leads to an empirical minimization of the MSE.</p>
 </div>
-</div></div>
 </section></section>
 <section>
 <section id="simulation-results" class="title-slide slide level1 white center" data-background-color="#002855">
@@ -823,7 +802,7 @@ F(x; \boldsymbol{\theta}) =
 <div style="font-size: 70%;">
 <ul>
 <li>The Hill estimator struggles with distributions for which <span class="math inline">\(\xi\)</span> is low, but excels for very heavy tailed distributions. The exponential estimator and the random block maxima are more variable for the latter case;</li>
-<li>The <span class="citation" data-cites="Beirlant.Vynckier.Teugels:1996b">Beirlant, Vynckier, and Teugels (<a href="#/references" role="doc-biblioref" onclick="">1996</a>)</span> procedure is extremely variable, both for the selection of <span class="math inline">\(n_u\)</span> and for the estimation of <span class="math inline">\(\xi\)</span>. It often fails to fit.</li>
+<li>The <span class="citation" data-cites="Beirlant.Vynckier.Teugels:1996b">Beirlant, Vynckier, and Teugels (<a href="#/references" role="doc-biblioref" onclick="">1996a</a>)</span> procedure is extremely variable, both for the selection of <span class="math inline">\(n_u\)</span> and for the estimation of <span class="math inline">\(\xi\)</span>. It often fails to fit.</li>
 <li>The methods of <span class="citation" data-cites="Hall.Welsh:1985">Hall and Welsh (<a href="#/references" role="doc-biblioref" onclick="">1985</a>)</span> and <span class="citation" data-cites="Caeiro.Gomes:2014">Caeiro and Gomes (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span> behave erratically with small shape parameters, giving shape parameter estimates that show strong upward bias. They retain more than 15% of the data for inference, with a wide range of values of order statistics <span class="math inline">\(n_u\)</span>.</li>
 <li>The proposals of <span class="citation" data-cites="Bladt:2020">Bladt, Albrecher, and Beirlant (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> and <span class="citation" data-cites="Schneider:2021">Schneider, Krajina, and Krivobokova (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span> work very well in the heavy-tailed case.</li>
 </ul>
@@ -834,7 +813,7 @@ F(x; \boldsymbol{\theta}) =
 <div style="font-size: 70%;">
 <ul>
 <li>The minimization of AMSE of <span class="citation" data-cites="Caeiro.Gomes:2016">Caeiro and Gomes (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> and <span class="citation" data-cites="Gomes.Figueiredo.Neves:2012">Gomes, Figueiredo, and Neves (<a href="#/references" role="doc-biblioref" onclick="">2012</a>)</span> display low relative root mean squared error for quantile estimation, consistently across all scenarios, although the methods based on minimization of the asymptotic mean squared error can break down catastrophically.</li>
-<li>The method with the lowest relative bias for quantiles is <span class="citation" data-cites="Guillou.Hall:2001">Guillou and Hall (<a href="#/references" role="doc-biblioref" onclick="">2001</a>)</span>, the lower mean squared errors are given by the <span class="citation" data-cites="Danielsson:2019">Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span> minimization of the Kolomogorov–Smirnov distance (for <span class="math inline">\(\xi &lt; 0.25\)</span>) and <span class="citation" data-cites="Bladt:2020">Bladt, Albrecher, and Beirlant (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> (<span class="math inline">\(\xi \geq 0.5\)</span>);</li>
+<li>The method with the lowest relative bias for quantiles is <span class="citation" data-cites="Guillou.Hall:2001">Guillou and Hall (<a href="#/references" role="doc-biblioref" onclick="">2001</a>)</span>, the lower mean squared errors are given by the <span class="citation" data-cites="Danielsson:2019">Jon Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span> minimization of the Kolomogorov–Smirnov distance (for <span class="math inline">\(\xi &lt; 0.25\)</span>) and <span class="citation" data-cites="Bladt:2020">Bladt, Albrecher, and Beirlant (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> (<span class="math inline">\(\xi \geq 0.5\)</span>);</li>
 <li><span class="citation" data-cites="Drees.Kaufmann:1998">Drees and Kaufmann (<a href="#/references" role="doc-biblioref" onclick="">1998</a>)</span> fails to return valid values for <span class="math inline">\(n_u\)</span> in around 80% of cases. When it works, it leads to small values of <span class="math inline">\(n_u\)</span>, and to shape estimates that are below average and too variable.</li>
 </ul>
 </div>
@@ -918,7 +897,447 @@ F(x; \boldsymbol{\theta}) =
 <li>exponential tilting extended generalized Pareto model with shape <span class="math inline">\(\xi =0.2\)</span> and <span class="math inline">\(\kappa=0.1\)</span></li>
 </ol>
 </div>
-<!-- ## Parametric methods -->
+</section>
+<section id="parametric-selection-methods" class="slide level2">
+<h2>Parametric selection methods</h2>
+<div style="font-size: 50%;">
+<ol type="1">
+<li>the <span class="citation" data-cites="Pickands:1975">Pickands (<a href="#/references" role="doc-biblioref" onclick="">1975</a>)</span> goodness-of-fit measure, but with maximum likelihood parameter estimates.</li>
+<li>the threshold stability plot of <span class="citation" data-cites="Davison.Smith:1990">Davison and Smith (<a href="#/references" role="doc-biblioref" onclick="">1990</a>)</span>, using the smallest threshold so that the subsequent point estimates for the shape are included in the profile-likelihood 95% confidence interval for all higher thresholds;</li>
+<li>minimization of the mean squared error of the shape parameter by semiparametric bootstrap of <span class="citation" data-cites="Caers.Beirlant.Maes:1999">Caers, Beirlant, and Maes (<a href="#/references" role="doc-biblioref" onclick="">1999</a>)</span>;</li>
+<li>normality tests for coefficients of <span class="citation" data-cites="Thompson:2009">Thompson et al. (<a href="#/references" role="doc-biblioref" onclick="">2009</a>)</span>;</li>
+<li>the <span class="citation" data-cites="Suveges.Davison:2010">Süveges and Davison (<a href="#/references" role="doc-biblioref" onclick="">2010</a>)</span> information matrix test with gap <span class="math inline">\(K=1\)</span>;</li>
+<li>the score test of <span class="citation" data-cites="Northrop.Coleman:2014">Northrop and Coleman (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span> comparing the piecewise generalized Pareto and generalized Pareto models;</li>
+<li>tests of constant coefficient of variation of <span class="citation" data-cites="Castillo.Padilla:2016">Castillo and Padilla (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span>, returning the lowest threshold at which we fail to reject the null;</li>
+<li>the mean residual life plot of <span class="citation" data-cites="Davison.Smith:1990">Davison and Smith (<a href="#/references" role="doc-biblioref" onclick="">1990</a>)</span>, using the automated procedure of <span class="citation" data-cites="Langousis:2016">Langousis et al. (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span>, returning the threshold that minimizes the weighted mean squared error;</li>
+<li>the <span class="citation" data-cites="Wadsworth:2016">Wadsworth (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span> white noise test, returning the smallest threshold at which the null hypothesis of white noise cannot be rejected based on a change-point likelihood ratio test;</li>
+</ol>
+</div>
+</section>
+<section id="parametric-selection-methods-1" class="slide level2">
+<h2>Parametric selection methods</h2>
+<div style="font-size: 50%;">
+<ol start="10" type="1">
+<li>the posterior predictive model of <span class="citation" data-cites="Northrop.Attalides.Jonathan:2017">Northrop, Attalides, and Jonathan (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span>, returning the threshold with the largest posterior weight and Bayesian model averaging estimates;</li>
+<li>goodness-of-fit statistics from <span class="citation" data-cites="Bader.Yan.Zhang:2018">Bader, Yan, and Zhang (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>;</li>
+<li>the <span class="citation" data-cites="SilvaLomba.FragaAlves:2020">Silva Lomba and Fraga Alves (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span> <span class="math inline">\(L\)</span>-moment skewness-kurtosis procedure;</li>
+<li><span class="citation" data-cites="Kiran.Srinivas:2021">Kiran and Srinivas (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span> Mahalanobis-distance minimization with <span class="math inline">\(L\)</span>-moments;</li>
+<li>metric-based adjustments of <span class="citation" data-cites="Varty.Tawn:2021">Varty et al. (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span> with exponential quantile-quantile plots with weighted mean squared error;</li>
+<li>the likelihood ratio test to compare the extended generalized Pareto beta model of <span class="citation" data-cites="Gamet.Jalbert:2022">Gamet and Jalbert (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span> with the generalized Pareto (<span class="math inline">\(\mathscr{H}_0: \kappa=1\)</span>); and</li>
+<li>metric-based adjustments of <span class="citation" data-cites="Murphy.Tawn.Varty:2024">Murphy, Tawn, and Varty (<a href="#/references" role="doc-biblioref" onclick="">2025</a>)</span> with generalized Pareto quantile-quantile plots.</li>
+</ol>
+<!-- -->
+</div>
+</section>
+<section id="semiparametric-selection-methods" class="slide level2">
+<h2>Semiparametric selection methods</h2>
+<!-- end of list -->
+<div style="font-size: 50%;">
+<ol type="1">
+<li>minimization of the asymptotic mean squared error of the Hill estimator <span class="citation" data-cites="Hall.Welsh:1985">(<a href="#/references" role="doc-biblioref" onclick="">Hall and Welsh 1985</a>)</span>;</li>
+<li>smoothing and bootstrap estimation of the mean squared error <span class="citation" data-cites="Hall:1990">(<a href="#/references" role="doc-biblioref" onclick="">Hall 1990</a>)</span>;</li>
+<li>the exponential generalized quantile threshold of <span class="citation" data-cites="Beirlant.Vynckier.Teugels:1996a">Beirlant, Vynckier, and Teugels (<a href="#/references" role="doc-biblioref" onclick="">1996b</a>)</span>;</li>
+<li>the bias-reduction method of <span class="citation" data-cites="Drees.Kaufmann:1998">Drees and Kaufmann (<a href="#/references" role="doc-biblioref" onclick="">1998</a>)</span>;</li>
+<li>minimization of the asymptotic mean squared error of the Hill estimator, estimated using a nonparametric double bootstrap <span class="citation" data-cites="Danielsson:2001">(<a href="#/references" role="doc-biblioref" onclick="">J. Danielsson et al. 2001</a>)</span>;</li>
+<li>the bootstrap diagnostic test for exponentiality of log-spacings of <span class="citation" data-cites="Guillou.Hall:2001">Guillou and Hall (<a href="#/references" role="doc-biblioref" onclick="">2001</a>)</span>;</li>
+<li>the non-robust prediction error <span class="math inline">\(C\)</span>-criterion (non-robust version) of <span class="citation" data-cites="Dupuis.Victoria-Feser:2003">Dupuis and Victoria-Feser (<a href="#/references" role="doc-biblioref" onclick="">2003</a>)</span>;</li>
+<li>minimization of <span class="citation" data-cites="Reiss.Thomas:2007">Reiss and Thomas (<a href="#/references" role="doc-biblioref" onclick="">2007</a>)</span> criterion <span class="math display">\[\begin{align*}
+\frac{1}{n_u} \sum_{i=n-n_u}^{n} i^\beta \left|H_{n,i} - \mathrm{med}\{H_{n,n}, \ldots, H_{n, i+1}\}\right|^p, \qquad 0 \leq \beta &lt; \frac{1}{2},
+\end{align*}\]</span> for <span class="math inline">\(p=1\)</span>, with <span class="math inline">\(\beta=0\)</span> based on recommendations from <span class="citation" data-cites="Neves:FragaAlves:2004">Neves and Fraga Alves (<a href="#/references" role="doc-biblioref" onclick="">2004</a>)</span> for Hill’s estimator with heavy-tailed data;</li>
+<li><span class="citation" data-cites="Reiss.Thomas:2007">Reiss and Thomas (<a href="#/references" role="doc-biblioref" onclick="">2007</a>)</span>, as above but with <span class="math inline">\(p=2\)</span>;</li>
+</ol>
+</div>
+</section>
+<section id="semiparametric-selection-methods-1" class="slide level2">
+<h2>Semiparametric selection methods</h2>
+<div style="font-size: 50%;">
+<ol start="10" type="1">
+<li>the Jackson kernel-based threshold selection of <span class="citation" data-cites="Goegebeur.Beirlant.deWet:2008">Goegebeur, Beirlant, and Wet (<a href="#/references" role="doc-biblioref" onclick="">2008</a>)</span>;</li>
+<li>the minimum distance threshold selection procedure of <span class="citation" data-cites="Clauset.Shalizi.Newman:2009">Clauset, Shalizi, and Newman (<a href="#/references" role="doc-biblioref" onclick="">2009</a>)</span>;</li>
+<li>minimization of the asymptotic mean squared error of the Hill estimator, estimated using a double nonparametric bootstrap scheme <span class="citation" data-cites="Gomes.Figueiredo.Neves:2012">(<a href="#/references" role="doc-biblioref" onclick="">Gomes, Figueiredo, and Neves 2012</a>)</span>;</li>
+<li>a heuristic algorithm based on sample path stability <span class="citation" data-cites="Gomes:2013">(<a href="#/references" role="doc-biblioref" onclick="">Gomes et al. 2013</a>)</span>;</li>
+<li>the random block maxima estimator of <span class="citation" data-cites="Wager:2014">Wager (<a href="#/references" role="doc-biblioref" onclick="">2014</a>)</span> with empirical risk minimization;</li>
+<li>a variant of <span class="citation" data-cites="Hall:1990">Hall (<a href="#/references" role="doc-biblioref" onclick="">1990</a>)</span> that estimates second-order parameters <span class="citation" data-cites="Caeiro.Gomes:2014">(<a href="#/references" role="doc-biblioref" onclick="">Caeiro and Gomes 2014</a>)</span>;</li>
+<li>minimization of the asymptotic mean squared error of the Hill estimator <span class="citation" data-cites="Caeiro.Gomes:2016">(Section 2, <a href="#/references" role="doc-biblioref" onclick="">Caeiro and Gomes 2016</a>)</span>;</li>
+<li>the eyeballing technique of <span class="citation" data-cites="Danielsson:2019">Jon Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span> based on moving windows for Hill plot;</li>
+<li>minimization of the mean absolute deviation between the largest observations of the dataset and the theoretical generalized Pareto tail <span class="citation" data-cites="Danielsson:2019">(<a href="#/references" role="doc-biblioref" onclick="">Jon Danielsson et al. 2019</a>)</span>, estimated using Hill’s estimator;</li>
+<li>the procedure of <span class="citation" data-cites="Danielsson:2019">Jon Danielsson et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>, but with the Kolmogorov–Smirnov distance;</li>
+<li>minimization of the asymptotic mean squared error based on the relationship between Hill and trimmed Hill estimators of <span class="citation" data-cites="Bladt:2020">Bladt, Albrecher, and Beirlant (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span>;</li>
+<li>smooth estimation of the asymptotic mean squared error of the generalized jackknife estimator (SAMSEE) of <span class="citation" data-cites="Schneider:2021">Schneider, Krajina, and Krivobokova (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span>.</li>
+</ol>
+</div>
+</section>
+<section id="relative-absolute-bias" class="slide level2">
+<h2>Relative absolute bias</h2>
+<div style="font-size: 40%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+<th style="text-align: right;">c</th>
+<th style="text-align: right;">d</th>
+<th style="text-align: right;">e</th>
+<th style="text-align: right;">f</th>
+<th style="text-align: right;">g</th>
+<th style="text-align: right;">h</th>
+<th style="text-align: right;">i</th>
+<th style="text-align: right;">j</th>
+<th style="text-align: right;">k</th>
+<th style="text-align: right;">l</th>
+<th style="text-align: right;">m</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">o</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tsb</td>
+<td style="text-align: right;"><span class="math inline">\(8.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(29.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(52.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(62.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(27.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.4\)</span></td>
+</tr>
+<tr class="even">
+<td>mrl</td>
+<td style="text-align: right;"><span class="math inline">\(8.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(29.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(52.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(62.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(28.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.2\)</span></td>
+</tr>
+<tr class="odd">
+<td>th</td>
+<td style="text-align: right;"><span class="math inline">\(8.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(32.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(68.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(81.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(30.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.3\)</span></td>
+</tr>
+<tr class="even">
+<td>imt</td>
+<td style="text-align: right;"><span class="math inline">\(8.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(33.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(66.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(79.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(31.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.3\)</span></td>
+</tr>
+<tr class="odd">
+<td>egp</td>
+<td style="text-align: right;"><span class="math inline">\(8.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(17.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(35.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(74.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(93.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(33.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(18.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(23.0\)</span></td>
+</tr>
+<tr class="even">
+<td>nc</td>
+<td style="text-align: right;"><span class="math inline">\(9.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(11.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(17.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(40.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(92.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(104.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(37.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(18.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(23.1\)</span></td>
+</tr>
+<tr class="odd">
+<td>naj</td>
+<td style="text-align: right;"><span class="math inline">\(8.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(17.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(37.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(91.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(115.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(36.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(23.0\)</span></td>
+</tr>
+<tr class="even">
+<td>byz</td>
+<td style="text-align: right;"><span class="math inline">\(8.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(33.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(61.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(75.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(30.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.1\)</span></td>
+</tr>
+<tr class="odd">
+<td>cv</td>
+<td style="text-align: right;"><span class="math inline">\(7.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(9.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(28.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(53.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(65.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(26.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.9\)</span></td>
+</tr>
+<tr class="even">
+<td>wa</td>
+<td style="text-align: right;"><span class="math inline">\(7.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(17.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(11.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(3.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(11.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(30.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(57.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(68.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(26.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(18.8\)</span></td>
+</tr>
+<tr class="odd">
+<td>vt</td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(9.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(11.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(28.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(53.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(62.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(26.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.8\)</span></td>
+</tr>
+<tr class="even">
+<td>mvt</td>
+<td style="text-align: right;"><span class="math inline">\(7.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(11.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(9.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(11.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(31.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(53.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(58.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(29.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20.2\)</span></td>
+</tr>
+<tr class="odd">
+<td>alrs</td>
+<td style="text-align: right;"><span class="math inline">\(10.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(27.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(45.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(82.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(94.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(41.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(26.8\)</span></td>
+</tr>
+<tr class="even">
+<td>ks</td>
+<td style="text-align: right;"><span class="math inline">\(8.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(34.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(52.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(65.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(32.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(18.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.9\)</span></td>
+</tr>
+<tr class="odd">
+<td>pic</td>
+<td style="text-align: right;"><span class="math inline">\(8.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(31.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(64.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(80.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(29.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(17.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(22.2\)</span></td>
+</tr>
+<tr class="even">
+<td>cbm</td>
+<td style="text-align: right;"><span class="math inline">\(7.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(19.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.5\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(9.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(28.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(53.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(65.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(26.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.5\)</span></td>
+</tr>
+<tr class="odd">
+<td>or</td>
+<td style="text-align: right;"><span class="math inline">\(5.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(6.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(3.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.7\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(3.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(14.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(24.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(25.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(8.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(3.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(9.0\)</span></td>
+</tr>
+<tr class="even">
+<td>bma</td>
+<td style="text-align: right;"><span class="math inline">\(8.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(20.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(13.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(4.3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(10.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(15.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(12.8\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(33.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(74.4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(87.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(31.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(16.9\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(7.2\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(21.1\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>
@@ -929,7 +1348,10 @@ F(x; \boldsymbol{\theta}) =
 Bader, Brian, Jun Yan, and Xuebin Zhang. 2018. <span>“Automated Threshold Selection for Extreme Value Analysis via Ordered Goodness-of-Fit Tests with Adjustment for False Discovery Rate.”</span> <em>The Annals of Applied Statistics</em> 12 (1): 310–29. <a href="https://doi.org/10.1214/17-aoas1092">https://doi.org/10.1214/17-aoas1092</a>.
 </div>
 <div id="ref-Beirlant.Vynckier.Teugels:1996b" class="csl-entry" role="listitem">
-Beirlant, Jan, Petra Vynckier, and Josef L. Teugels. 1996. <span>“Excess Functions and Estimation of the Extreme-Value Index.”</span> <em>Bernoulli</em> 2 (4): 293–318.
+Beirlant, Jan, Petra Vynckier, and Josef L. Teugels. 1996a. <span>“Excess Functions and Estimation of the Extreme-Value Index.”</span> <em>Bernoulli</em> 2 (4): 293–318.
+</div>
+<div id="ref-Beirlant.Vynckier.Teugels:1996a" class="csl-entry" role="listitem">
+Beirlant, Jan, Petra Vynckier, and Jozef L. Teugels. 1996b. <span>“Tail Index Estimation, <span>P</span>areto Quantile Plots Regression Diagnostics.”</span> <em>Journal of the American Statistical Association</em> 91 (436): 1659–67. <a href="https://doi.org/10.1080/01621459.1996.10476735">https://doi.org/10.1080/01621459.1996.10476735</a>.
 </div>
 <div id="ref-Bladt:2020" class="csl-entry" role="listitem">
 Bladt, Martin, Hansjörg Albrecher, and Jan Beirlant. 2020. <span>“Threshold Selection and Trimming in Extremes.”</span> <em>Extremes</em> 23 (4): 629–65. <a href="https://doi.org/10.1007/s10687-020-00385-0">https://doi.org/10.1007/s10687-020-00385-0</a>.
@@ -940,14 +1362,23 @@ Caeiro, Frederico, and Ivette Gomes. 2014. <span>“On the Bootstrap Methodology
 <div id="ref-Caeiro.Gomes:2016" class="csl-entry" role="listitem">
 Caeiro, Frederico, and M. Ivette Gomes. 2016. <span>“Threshold Selection in Extreme Value Analysis.”</span> In <em>Extreme Value Modeling and Risk Analysis: Methods and Applications</em>, edited by Dipak K. Dey and Jun Yan, 69–86. Boca Raton, FL: CRC Press. <a href="https://doi.org/10.1201/b19721">https://doi.org/10.1201/b19721</a>.
 </div>
+<div id="ref-Caers.Beirlant.Maes:1999" class="csl-entry" role="listitem">
+Caers, Jef, Jan Beirlant, and Marc A. Maes. 1999. <span>“Statistics for Modeling Heavy Tailed Distributions in Geology: Part i. Methodology.”</span> <em>Mathematical Geology</em> 31 (4): 391–410. <a href="https://doi.org/10.1023/a:1007538624271">https://doi.org/10.1023/a:1007538624271</a>.
+</div>
 <div id="ref-Castillo.Padilla:2016" class="csl-entry" role="listitem">
 Castillo, Joan del, and Maria Padilla. 2016. <span>“Modelling Extreme Values by the Residual Coefficient of Variation.”</span> <em>Statistics and Operations Research Transactions</em> 40 (2): 303–20. <a href="https://doi.org/10.2436/20.8080.02.45">https://doi.org/10.2436/20.8080.02.45</a>.
 </div>
 <div id="ref-Choulakian.Stephens:2001" class="csl-entry" role="listitem">
 Choulakian, Vartan, and Michael A Stephens. 2001. <span>“Goodness-of-Fit Tests for the Generalized <span>P</span>areto Distribution.”</span> <em>Technometrics</em> 43 (4): 478–84. <a href="https://doi.org/10.1198/00401700152672573">https://doi.org/10.1198/00401700152672573</a>.
 </div>
+<div id="ref-Clauset.Shalizi.Newman:2009" class="csl-entry" role="listitem">
+Clauset, Aaron, Cosma Rohilla Shalizi, and M. E. J. Newman. 2009. <span>“Power-Law Distributions in Empirical Data.”</span> <em>SIAM Review</em> 51 (4): 661–703. <a href="https://doi.org/10.1137/070710111">https://doi.org/10.1137/070710111</a>.
+</div>
 <div id="ref-Collings:2025" class="csl-entry" role="listitem">
 Collings, T. P., C. J. R. Murphy-Barltrop, C. Murphy, I. D. Haigh, P. D. Bates, and N. D. Quinn. 2025. <span>“Automated Tail-Informed Threshold Selection for Extreme Coastal Sea Levels.”</span> <em>Natural Hazards and Earth System Sciences</em> 25 (11): 4545–62. <a href="https://doi.org/10.5194/nhess-25-4545-2025">https://doi.org/10.5194/nhess-25-4545-2025</a>.
+</div>
+<div id="ref-Danielsson:2001" class="csl-entry" role="listitem">
+Danielsson, J., L. de Haan, L. Peng, and C. G. de Vries. 2001. <span>“Using a Bootstrap Method to Choose the Sample Fraction in Tail Index Estimation.”</span> <em>Journal of Multivariate Analysis</em> 76 (2): 226–48. <a href="https://doi.org/10.1006/jmva.2000.1903">https://doi.org/10.1006/jmva.2000.1903</a>.
 </div>
 <div id="ref-Danielsson:2019" class="csl-entry" role="listitem">
 Danielsson, Jon, Lerby Ergun, Casper G. de Vries, and Laurens de Haan. 2019. <span>“Tail Index Estimation: Quantile-Driven Threshold Selection.”</span> <a href="https://doi.org/10.34989/swp-2019-28">https://doi.org/10.34989/swp-2019-28</a>.
@@ -972,6 +1403,9 @@ Goegebeur, Yuri, Jan Beirlant, and Tertius de Wet. 2008. <span>“Linking <span>
 </div>
 <div id="ref-Gomes.Figueiredo.Neves:2012" class="csl-entry" role="listitem">
 Gomes, M. Ivette, Fernanda Figueiredo, and M. Manuela Neves. 2012. <span>“Adaptive Estimation of Heavy Right Tails: Resampling-Based Methods in Action.”</span> <em>Extremes</em> 15 (4): 463–89. <a href="https://doi.org/10.1007/s10687-011-0146-6">https://doi.org/10.1007/s10687-011-0146-6</a>.
+</div>
+<div id="ref-Gomes:2013" class="csl-entry" role="listitem">
+Gomes, M. Ivette, Lı́gia Henriques-Rodrigues, M. Isabel Fraga Alves, and B. G. Manjunath. 2013. <span>“Adaptive <span>PORT</span>–<span>MVRB</span> Estimation: An Empirical Comparison of Two Heuristic Algorithms.”</span> <em>Journal of Statistical Computation and Simulation</em> 83 (6): 1129–44. <a href="https://doi.org/10.1080/00949655.2011.652113">https://doi.org/10.1080/00949655.2011.652113</a>.
 </div>
 <div id="ref-Gomes.Oliveira:2001" class="csl-entry" role="listitem">
 Gomes, M. Ivette, and Orlando Oliveira. 2001. <span>“The Bootstrap Methodology in Statistics of Extremes—Choice of the Optimal Sample Fraction.”</span> <em>Extremes</em> 4 (4): 331–58. <a href="https://doi.org/10.1023/a:1016592028871">https://doi.org/10.1023/a:1016592028871</a>.
@@ -1014,6 +1448,9 @@ Naveau, Philippe. 2025. <span>“Jointly Modeling Bulk and Tails.”</span> In <
 </div>
 <div id="ref-Naveau:2016" class="csl-entry" role="listitem">
 Naveau, Philippe, Raphael Huser, Pierre Ribereau, and Alexis Hannart. 2016. <span>“Modeling Jointly Low, Moderate, and Heavy Rainfall Intensities Without a Threshold Selection.”</span> <em>Water Resources Research</em> 52 (4): 2753–69. https://doi.org/<a href="https://doi.org/10.1002/2015WR018552">https://doi.org/10.1002/2015WR018552</a>.
+</div>
+<div id="ref-Neves:FragaAlves:2004" class="csl-entry" role="listitem">
+Neves, Cláudia, and M. I. Fraga Alves. 2004. <span>“Reiss and Thomas’ Automatic Selection of the Number of Extremes.”</span> <em>Computational Statistics &amp; Data Analysis</em> 47 (4): 689–704. <a href="https://doi.org/10.1016/j.csda.2003.11.011">https://doi.org/10.1016/j.csda.2003.11.011</a>.
 </div>
 <div id="ref-Northrop.Attalides.Jonathan:2017" class="csl-entry" role="listitem">
 Northrop, Paul J., Nicolas Attalides, and Philip Jonathan. 2017. <span>“Cross-Validatory Extreme Value Threshold Selection and Uncertainty with Application to Ocean Storm Severity.”</span> <em>Journal of the Royal Statistical Society: Series C (Applied Statistics)</em> 66 (1): 93–120. https://doi.org/<a href="https://doi.org/10.1111/rssc.12159">https://doi.org/10.1111/rssc.12159</a>.

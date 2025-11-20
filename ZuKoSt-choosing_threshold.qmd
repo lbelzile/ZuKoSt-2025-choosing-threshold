@@ -601,7 +601,7 @@ e(v) = \mathrm{E}(X - v \mid X>v) = \frac{\sigma}{1-\xi} + \frac{\xi}{1-\xi} v, 
 ## Consistency
 
 
-We work under ''domain of attraction'' condition, meaning that usual asymptotics are only valid if the threshold increases with the sample size.
+We work under "domain of attraction" conditions, meaning that usual asymptotics are only valid if the threshold increases with the sample size.
 
 
 For consistency, we need an intermediate sequence $n_u/n \to 0$, but $n_u, n \to \infty$, e.g., $n_u = \lceil n- n^q\rceil$ for $q \in (0,1)$, with $q=0.995$ or $q=0.999.$ 
@@ -646,10 +646,9 @@ The asymptotic bias, which is unobtainable in finite samples, is dictated by the
 
 ::: {style="font-size: 90%;"}
 
+The asymptotic mean squared error of Hill's estimator is $$\mathsf{AMSE}(H_{n,n_u}) = \xi^2/n_u + A^2(n/n_u)/(1-\rho)^2.$$
 
-Many heavy-tailed distributions fall within the @Hall.Welsh:1985 class have $A(t) = \beta t^\rho$ for $\beta \neq 0$ with $\rho < 0.$
-
-The asymptotic mean squared error of Hill's estimator is $$\mathsf{AMSE}(H_{n,n_u}) = \xi^2/n_u + A^2(n/n_u)/(1-\rho)^2,$$ which is minimized when
+Many heavy-tailed distributions fall within the @Hall.Welsh:1985 class, for which $A(t) = \beta t^\rho$ for $\beta \neq 0$ with $\rho < 0.$ For these distributions, $\mathsf{AMSE}(H_{n,n_u})$ is minimized when
 \begin{align}
 n_u = \left\lfloor \frac{(1-\rho)^2 n^{-2\rho}}{-2\rho \beta^2}\right\rfloor^{\frac{1}{1-2\rho}}.
 \end{align}
@@ -778,27 +777,17 @@ Problems:
 
 ## Mean residual life plot
 
-:::: {.columns}
-
-::: {.column width="50%"}
 
 
 ::: {style="font-size: 80%;"}
 Mean residual plot [@Davison.Smith:1990], which graphs the empirical mean excesses $e(u)$ against thresholds $u \in \mathcal{U}.$
 
-Common practice is to find a region above which the slope looks **linear**.
-
-Automation proposed by @Langousis:2016 based on weighted regression.
-
+Find a region above which the slope looks **linear**.
 :::
-
-:::
-
-
-::: {.column width="50%"}
 
 ```{r}
-#| out-width: '100%'
+#| out-width: '70%'
+#| fig-align: 'center'
 rain <- sort(rain, decreasing = TRUE)
 # Mean residual life plot
 mrl <- mev::tstab.mrl(rain, thresh = 15:65, plot = FALSE)
@@ -818,7 +807,7 @@ ggplot(
     ymax = upper
   )
 ) +
-  geom_errorbar(col = "grey90") +
+  geom_errorbar(col = "grey30") +
   geom_point(cex = 0.5) +
   geom_line() +
   geom_abline(
@@ -832,12 +821,9 @@ ggplot(
     y = "",
     subtitle = "mean residual life"
   ) +
-  theme_minimal()
+  theme_classic()
 ```
 
-:::
-
-::::
 
 ## Threshold stability plots
 
@@ -976,12 +962,19 @@ Embed generalized Pareto $F(x;\sigma,\xi)$ in a more flexible model using a cont
 \Pr(X\leq x) = G_\kappa\{ F(x;\sigma,\xi)\}.                     \end{align*}
 Choose $G$ to keep the tail properties. See the chapter of @Naveau:2025 for a recent review.
 
-- @Papastathopoulos.Tawn:2013: models imply the density at the origin is zero.
+- @Papastathopoulos.Tawn:2013 models imply the density at the origin is zero.
 - @Gamet.Jalbert:2022 propose two models, but one leads to non-regular asymptotics (restriction on boundary of the parameter space).
-- @Naveau:2016 additional models with two parameters.
+- @Naveau:2016 suggest additional models with two parameters.
 
 :::
 
+## Extended generalized Pareto
+
+```{r}
+#| out-width: '70%'
+#| fig-align: 'center'
+knitr::include_graphics("figures/Comparison_return_level-EGPvsGP.png")
+```
 
 ## Piecewise generalized Pareto model
 
@@ -1095,7 +1088,7 @@ Glue a distribution for the bulk with one for the tail using a mixture of disjoi
 See @Scarrott.MacDonald:2012 and @Hu.Scarrott:2018 for reviews.
 
 
-A ''parametrized tail fraction'' model uses a mixture of truncated distribution $H$ below and generalized Pareto above $u$, with mixing probability $\zeta_u$, 
+A "parametrized tail fraction" model uses a mixture of truncated distribution $H$ below and generalized Pareto above $u$, with mixing probability $\zeta_u$, 
 \begin{align*}
 F(x; \boldsymbol{\theta}) =
 \begin{cases}
@@ -1199,7 +1192,7 @@ Model all of the data, but need flexible models for bulk (kernel density mixture
 
 - If $u$ is a parameter, the profile likelihood for threshold $u$ needs not be monotone.
 - Fit of the tail may be driven by bulk (sample contamination)
-- Sharp discontinuity at $u$, continuity constraints or random threshold [@doNascimento.Gamerman.Lopes:2012] alleviate this somewhat.
+- Sharp discontinuity at $u$; continuity constraints or random threshold [@doNascimento.Gamerman.Lopes:2012] alleviate this somewhat.
 
 
 ## Goodness-of-fit measures
@@ -1403,21 +1396,15 @@ Other proposals include
 They relate the bias and MSE of Hill estimator with other estimators for $\xi>0$, and use these to minimize the mean squared error under the assumption $\rho=-1.$
 
 
-## Random block maxima
+## Extremal $U$-estimators
 
-:::: {.columns}
-
-::: {.column width="50%"}
 
 ```{r}
-#| out-width: '100%'
+#| out-width: '70%'
+#| fig-align: 'center'
 par(bty = "l")
 rbm::rbm.plot(sort(rain, decreasing = TRUE)[1:1000])
 ```
-
-:::
-
-::: {.column width="50%"}
 
 
 ::: {style="font-size: 90%;"}
@@ -1426,10 +1413,6 @@ rbm::rbm.plot(sort(rain, decreasing = TRUE)[1:1000])
 Approximating the bias using the derivative of the sample path (which is its expected value up to scaling) leads to an empirical minimization of the MSE.
 
 :::
-
-:::
-
-::::
 
 # Simulation results  {background-color="`{r} hecbleu`" .white}
 
@@ -1632,8 +1615,115 @@ Slides: [`lbelzile.github.io/ZuKoSt-2025-choosing-threshold`](https://lbelzile.g
 
 :::
 
-<!-- ## Parametric methods -->
+## Parametric selection methods
 
 
+::: {style="font-size: 50%;"}
+
+1. the @Pickands:1975 goodness-of-fit measure, but with maximum likelihood parameter estimates.
+1. the threshold stability plot of @Davison.Smith:1990, using the smallest threshold so that the subsequent point estimates for the shape are included in the profile-likelihood 95\% confidence interval for all higher thresholds; 
+1. minimization of the mean squared error of the shape parameter by semiparametric bootstrap of @Caers.Beirlant.Maes:1999; 
+1. normality tests for coefficients of @Thompson:2009; 
+1. the @Suveges.Davison:2010 information matrix test with gap $K=1$;
+1. the score test of @Northrop.Coleman:2014 comparing the piecewise generalized Pareto and generalized Pareto models; 
+1. tests of constant coefficient of variation of @Castillo.Padilla:2016, returning the lowest threshold at which we fail to reject the null; 
+1. the mean residual life plot of @Davison.Smith:1990, using the automated procedure of @Langousis:2016, returning the threshold that minimizes the weighted mean squared error; 
+1. the @Wadsworth:2016 white noise test, returning the smallest threshold at which the null hypothesis of white noise cannot be rejected based on a change-point likelihood ratio test; 
+:::
+
+## Parametric selection methods
+
+
+
+::: {style="font-size: 50%;"}
+
+10. the posterior predictive model of @Northrop.Attalides.Jonathan:2017, returning the threshold with the largest posterior weight and Bayesian model averaging estimates;
+1. goodness-of-fit statistics from @Bader.Yan.Zhang:2018; 
+1. the @SilvaLomba.FragaAlves:2020 $L$-moment skewness-kurtosis procedure; 
+1. @Kiran.Srinivas:2021 Mahalanobis-distance minimization with $L$-moments;
+1. metric-based adjustments of @Varty.Tawn:2021 with exponential quantile-quantile plots with weighted mean squared error; 
+1. the likelihood ratio test to compare the extended generalized Pareto beta model of @Gamet.Jalbert:2022 with the generalized Pareto ($\mathscr{H}_0: \kappa=1$); and
+1. metric-based adjustments of @Murphy.Tawn.Varty:2024 with generalized Pareto quantile-quantile plots.
+
+
+<!-- -->
+
+:::
+
+## Semiparametric selection methods
+
+
+<!-- end of list -->
+
+
+
+::: {style="font-size: 50%;"}
+
+1. minimization of the asymptotic mean squared error of the Hill estimator [@Hall.Welsh:1985];
+1. smoothing and bootstrap estimation of the mean squared  error [@Hall:1990];
+1. the exponential generalized quantile threshold of @Beirlant.Vynckier.Teugels:1996a;
+1. the bias-reduction method of @Drees.Kaufmann:1998;
+1. minimization of the asymptotic mean squared error of the Hill estimator, estimated using a nonparametric double bootstrap [@Danielsson:2001];
+1. the bootstrap diagnostic test for exponentiality of log-spacings of @Guillou.Hall:2001;
+1. the non-robust prediction error $C$-criterion (non-robust version) of @Dupuis.Victoria-Feser:2003;
+1. minimization of @Reiss.Thomas:2007 criterion
+\begin{align*}
+\frac{1}{n_u} \sum_{i=n-n_u}^{n} i^\beta \left|H_{n,i} - \mathrm{med}\{H_{n,n}, \ldots, H_{n, i+1}\}\right|^p, \qquad 0 \leq \beta < \frac{1}{2}, 
+\end{align*}
+for $p=1$, with $\beta=0$ based on recommendations from @Neves:FragaAlves:2004 for Hill's estimator with heavy-tailed data;
+1. @Reiss.Thomas:2007, as above but with  $p=2$;
+
+:::
+
+## Semiparametric selection methods
+
+
+
+::: {style="font-size: 50%;"}
+
+
+10. the Jackson kernel-based threshold selection of @Goegebeur.Beirlant.deWet:2008;
+1. the minimum distance threshold selection procedure of @Clauset.Shalizi.Newman:2009;
+1.  minimization of the asymptotic mean squared error of the Hill estimator, estimated using a double nonparametric bootstrap scheme [@Gomes.Figueiredo.Neves:2012];
+1. a heuristic algorithm based on sample path stability [@Gomes:2013];
+1. the random block maxima estimator of @Wager:2014 with empirical risk minimization;
+1. a variant of @Hall:1990 that estimates second-order parameters [@Caeiro.Gomes:2014];
+1. minimization of the asymptotic mean squared error of the Hill estimator [Section 2, @Caeiro.Gomes:2016];
+1. the eyeballing technique of @Danielsson:2019 based on moving windows for Hill plot;
+1. minimization of the  mean absolute deviation between the largest observations of the dataset and the theoretical generalized Pareto tail [@Danielsson:2019], estimated using Hill's estimator; 
+1. the procedure of @Danielsson:2019, but with the Kolmogorov--Smirnov distance; 
+1. minimization of the asymptotic mean squared error based on the relationship between Hill and trimmed Hill estimators of @Bladt:2020;
+1. smooth estimation of the asymptotic mean squared error of the generalized jackknife estimator (SAMSEE) of @Schneider:2021.
+
+:::
+
+## Relative absolute bias
+
+
+::: {style="font-size: 40%;"}
+
+
+             a        b        c       d       e        f        g       h        i        j        k         l        m        n       o        p
+-----  -------  -------  -------  ------  ------  -------  -------  ------  -------  -------  -------  --------  -------  -------  ------  -------
+tsb      $8.4$   $19.3$   $13.3$   $8.0$   $4.4$   $10.3$   $15.4$   $6.2$   $12.5$   $29.2$   $52.6$    $62.9$   $27.6$   $16.4$   $7.9$   $21.4$
+mrl      $8.6$   $20.3$   $13.7$   $8.0$   $4.5$   $10.6$   $15.9$   $6.1$   $12.7$   $29.9$   $52.3$    $62.9$   $28.4$   $16.1$   $7.7$   $22.2$
+th       $8.3$   $21.1$   $13.1$   $7.8$   $4.3$   $10.3$   $15.7$   $6.0$   $12.5$   $32.2$   $68.0$    $81.3$   $30.9$   $16.8$   $7.6$   $21.3$
+imt      $8.3$   $20.1$   $13.7$   $7.9$   $4.3$   $10.3$   $15.7$   $5.9$   $12.6$   $33.2$   $66.4$    $79.4$   $31.0$   $16.8$   $7.8$   $22.3$
+egp      $8.4$   $22.0$   $13.5$   $8.0$   $4.4$   $10.6$   $17.1$   $6.3$   $13.1$   $35.6$   $74.2$    $93.4$   $33.5$   $18.4$   $7.6$   $23.0$
+nc       $9.3$   $22.7$   $14.1$   $8.5$   $4.4$   $11.3$   $17.9$   $6.3$   $14.2$   $40.0$   $92.2$   $104.5$   $37.0$   $18.9$   $7.5$   $23.1$
+naj      $8.9$   $22.1$   $14.1$   $8.3$   $4.5$   $10.9$   $17.2$   $6.2$   $13.5$   $37.5$   $91.2$   $115.8$   $36.5$   $19.1$   $7.7$   $23.0$
+byz      $8.2$   $20.4$   $13.4$   $7.8$   $4.2$   $10.0$   $15.3$   $5.8$   $12.6$   $33.1$   $61.4$    $75.5$   $30.6$   $16.8$   $7.3$   $21.1$
+cv       $7.7$   $19.1$   $13.2$   $7.4$   $4.1$    $9.5$   $14.6$   $5.7$   $12.0$   $28.3$   $53.3$    $65.8$   $26.6$   $15.5$   $8.0$   $21.9$
+wa       $7.7$   $17.5$   $11.9$   $6.7$   $3.6$    $8.7$   $13.6$   $4.7$   $11.2$   $30.6$   $57.0$    $68.1$   $26.4$   $16.2$   $5.5$   $18.8$
+vt       $7.8$   $19.0$   $13.1$   $7.4$   $4.1$    $9.6$   $14.3$   $5.7$   $11.8$   $28.3$   $53.6$    $62.7$   $26.7$   $15.6$   $8.1$   $21.8$
+mvt      $7.7$   $19.0$   $11.7$   $7.3$   $4.0$    $9.5$   $14.7$   $5.5$   $11.9$   $31.0$   $53.2$    $58.6$   $29.3$   $16.0$   $6.7$   $20.2$
+alrs    $10.1$   $27.0$   $15.4$   $8.9$   $4.6$   $12.1$   $19.8$   $6.6$   $15.2$   $45.6$   $82.4$    $94.8$   $41.2$   $22.0$   $7.9$   $26.8$
+ks       $8.6$   $21.2$   $13.6$   $8.0$   $4.3$   $10.5$   $16.4$   $6.0$   $13.2$   $34.0$   $52.5$    $65.4$   $32.3$   $18.1$   $7.5$   $21.9$
+pic      $8.4$   $20.8$   $13.6$   $7.8$   $4.2$   $10.2$   $15.6$   $5.9$   $12.6$   $31.7$   $64.3$    $80.2$   $29.8$   $17.3$   $7.8$   $22.2$
+cbm      $7.8$   $19.2$   $13.0$   $7.5$   $4.2$    $9.6$   $14.6$   $5.7$   $12.1$   $28.4$   $53.2$    $65.0$   $26.8$   $15.7$   $7.7$   $21.5$
+or       $5.1$    $8.9$    $6.2$   $4.7$   $3.0$    $5.7$    $8.3$   $3.8$    $7.6$   $14.4$   $24.1$    $25.9$   $13.2$    $8.0$   $3.6$    $9.0$
+bma      $8.3$   $20.2$   $13.0$   $7.9$   $4.3$   $10.2$   $15.8$   $5.9$   $12.8$   $33.1$   $74.4$    $87.0$   $31.2$   $16.9$   $7.2$   $21.1$
+
+:::
 
 ## References 
